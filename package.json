@@ -1,0 +1,24 @@
+{
+  "name": "flatroll",
+  "version": "1.0.0",
+  "description": "Flat Roll Project for Society",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandeepsajiru/flatroll.git"
+  },
+  "author": "BeingZero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sandeepsajiru/flatroll/issues"
+  },
+  "homepage": "https://github.com/sandeepsajiru/flatroll#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "mongoose": "^4.1.9"
+  }
+}

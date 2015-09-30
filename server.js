@@ -6,14 +6,12 @@ var mongoose = require('mongoose');
 
 // Mongoose connection to MongoDB 
 
-mongoose.connect('mongodb://localhost/flatroll', function (error)
- {
-    if (error) 
-	{
+mongoose.connect('mongodb://localhost/flatroll', function (error) {
+    if (error) {
         console.log(error);
-	}
+    }
 
- });
+});
 
 // Mongoose Schema definition
 
@@ -40,11 +38,11 @@ var ownerSchema = new Schema(
     FIRST_NAME: 'string',
     MIDDLE_NAME: 'string',
     LAST_NAME: 'string',
-    ADDRESS:'string',
+    ADDRESS: 'string',
     CITY: 'string',
     PHONE_NUMBERS: 'string',
     EMAIL_IDS: 'string',
-    NOTES: 'string'        
+    NOTES: 'string'
 }
 );
 
@@ -78,51 +76,43 @@ var app = express();
 // URLS management
 
 
-app.get('/tenantDetails', function (req, res)
-	 {    
-		tenants.find({}, function (err, docs) 
-		{
-			res.json({docs:docs});
-		});
+app.get('/tenantDetails', function (req, res) {
+    tenants.find({}, function (err, docs) {
+        res.json({ docs: docs });
+    });
 });
 
-app.get('/ownerDetails', function (req, res)
-	 {    
-		owners.find({}, function (err, docs) 
-		{
-			res.json({docs:docs});
-		});
+app.get('/ownerDetails', function (req, res) {
+    owners.find({}, function (err, docs) {
+        res.json({ docs: docs });
+    });
 });
 
-app.get('/flatDetails', function (req, res)
-	 {    
-		flats.find({}, function (err, docs) 
-		{
-			res.json({docs:docs});
-		});
+app.get('/flatDetails', function (req, res) {
+    console.log('Got Get Call');
+    flats.find({}, function (err, docs) {
+        res.json({ docs: docs });
+    });
 });
 
 
-app.get('/tenants', function(req, res)
-	{
-		res.sendFile(__dirname+'/sample1.html');
-	});
+app.get('/tenants', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
+});
 
-app.get('/owners', function(req, res)
-	{
-		res.sendFile(__dirname+'/sample2.html');
-	});
+app.get('/owners', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
+});
 
-app.get('/flats', function(req, res)
-	{
-		res.sendFile(__dirname+'/sample3.html');
-	});
+app.get('/flats', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
+});
 
 var server = app.listen(8081, function () {
 
-  var host = server.address().address
-  var port = server.address().port
+    var host = server.address().address
+    var port = server.address().port
 
-  console.log("Example app listening at http://locahost:%s", port)
+    console.log("Example app listening at http://locahost:%s", port)
 
 })
