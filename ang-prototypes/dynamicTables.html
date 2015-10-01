@@ -1,0 +1,141 @@
+﻿<!doctype html>
+<html ng-app="plunker">
+<head>
+    <meta charset="utf-8">
+    <title>AngularJS Plunker</title>
+    <link rel="stylesheet" href="style.css">
+    <script>document.write("<base href=\"" + document.location + "\" />");</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
+    <script src="app.js"></script>
+    <style>
+        /* Put your css in here */
+
+        .some {
+            border: 1px solid #cacaca;
+            padding: 10px;
+        }
+
+        td {
+            width: 200px;
+        }
+    </style>
+</head>
+<body ng-controller="MainCtrl">
+    <h1>Dynamic columns in a angularJS datatable</h1>
+    <table border="1">
+        <tr ng-repeat="item in items" item="item" columns="columns">
+    </table>
+
+    <div ng-repeat="column in columns">{{column.title}} visible: <input type="checkbox" ng-model="column.visible" /></div>
+
+    <button ng-click="shuffleColumnOrder()">Shuffle column order </button>
+    <script>
+        var app = angular.module('plunker', []);
+
+        app.controller('MainCtrl', function ($scope) {
+            $scope.items = [{
+                id: 1,
+                name: "BMW",
+                country: "Germany"
+            }, {
+                id: 2,
+                name: "Honda",
+                country: "Japan"
+            }, {
+                id: 3,
+                name: "Samsung",
+                country: "Korea"
+            }, ];
+
+            $scope.columns = [{
+                id: "column2",
+                title: "Manufacturer",
+                directive: "secondcolumn",
+                visible: true
+            }, {
+                id: "column1",
+                title: "ID",
+                directive: "firstcolumn",
+                visible: true
+            }, {
+                id: "column3",
+                title: "Country",
+                directive: "thirdcolumn",
+                visible: false
+            }, ];
+
+            $scope.shuffleColumnOrder = function () {
+                $scope.columns = $scope.columns.sort(function () {
+                    return .5 - Math.random();
+                });
+            }
+        });
+
+        app.directive('item', function ($compile) {
+            function createTDElement(directive) {
+                var table = angular.element('<table><tr><td ' + directive + '></td></tr></table>');
+                return table.find('td');
+            }
+
+            function render(element, scope) {
+                var column, html, i;
+                for (i = 0; i < scope.columns.length; i++) {
+                    column = scope.columns[i];
+                    if (column.visible) {
+                        html = $compile(createTDElement(column.directive))(scope);
+                        element.append(html);
+                    }
+                }
+
+            }
+
+            return {
+                restrict: 'A',
+                scope: {
+                    item: "=",
+                    columns: "="
+                },
+                controller: function ($scope, $element) {
+                    $scope.$watch(function () {
+                        return $scope.columns;
+                    }, function (newvalue, oldvalue) {
+                        if (newvalue !== oldvalue) {
+                            $element.children().remove();
+                            render($element, $scope);
+                            $compile($element.contents())($scope);
+                        }
+                    }, true);
+                },
+                compile: function () {
+                    return function (scope, element) {
+                        render(element, scope);
+                    }
+
+                }
+            };
+
+        });
+
+        app.directive("firstcolumn", function () {
+            return {
+                restrict: 'A',
+                template: '{{item.id}}'
+            }
+        });
+
+        app.directive("secondcolumn", function () {
+            return {
+                restrict: 'A',
+                template: '{{item.name}}'
+            }
+        });
+
+        app.directive("thirdcolumn", function () {
+            return {
+                restrict: 'A',
+                template: '{{item.country}}'
+            }
+        });
+    </script>
+</body>
+</html>
