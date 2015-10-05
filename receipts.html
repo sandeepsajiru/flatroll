@@ -97,8 +97,8 @@
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
-                        <li class="active"><a href="file:./dashboard.html">Dashboard</a></li>
-                        <li class="active"><a href="file:.receipts.html">Receipts</a></li>
+                        <li class="active"><a href="/dashboard">Dashboard</a></li>
+                        <li class="active"><a href="/receipts">Receipts</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -172,13 +172,13 @@
             <a href="" ng-click="disableEditor(6)">cancel</a>
         </div><br>
         
-        <button ng-click="route()">Submit</button>
+        <button ng-href="" ng-click="createReceipts()">Submit</button>
 
     </div>
 
     <script>
         var app = angular.module('receipts', []);
-        app.controller('myCtrl', function ($scope) {
+        app.controller('myCtrl', function ($scope,$http) {
             $scope.paymentItems = [ {id: 1, name: 'Cash'}, {id: 2, name: 'Cheque'}, {id: 3, name: 'Card'}];
             $scope.paymentTypes = [ {id: 1, name: 'Water Charges'}, {id: 2, name: 'Open Car Parking'}, {id: 3, name: 'Misc Vendors'}, {id: 4, name: 'Cable Operators'}, {id: 5, name: 'Internet Operators'}, {id: 6, name: 'Community Hall Booking'}, {id: 7, name: 'Maintenance'}, {id: 8, name: 'Birthday Event'}, {id: 9, name: 'Commercial Event'}];
             $scope.id = "Default Id";
@@ -195,6 +195,29 @@
             $scope.remarksEditorEnabled = false;
             $scope.received = "Received by";
             $scope.receivedEditorEnabled = false;
+            $scope.createReceipts;
+            
+            $scope.createReceipts = function() {
+            
+            var data = {
+            id:$scope.id,
+            receiptId:$scope.receiptId ,
+            amount:$scope.amount ,
+            date:$scope.date ,
+            paymentMode:$scope.paymentMode,
+            paymentTyp:$scope.paymentTyp,
+            remarks:$scope.remarks ,
+            received:$scope.received
+        };
+        $http.post('/', data)
+            .success(function(data) {
+                $scope.receipts = data;
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+                window.log('Submitted')
+        };
             
             $scope.update = function(x) {
                 if(x==1)
@@ -300,9 +323,6 @@
             };
         });
         
-        $scope.route = function() {
-            
-        }
     </script>
     
 </body>

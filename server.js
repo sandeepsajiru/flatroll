@@ -60,6 +60,18 @@ var flatSchema = new Schema(
     SCOOTER_PARKING_SLOTS: 'string'
 });
 
+var receiptsSchema = new Schema(
+{
+    id:'string',
+    receiptId: 'string',
+    amount: 'string',
+    date: 'date',
+    paymentMode: 'string',
+    paymentTyp: 'string',
+    remarks: 'string',
+    received: 'string',
+    isValid: 'Boolean'
+});
 // Mongoose Model definition
 
 
@@ -69,12 +81,45 @@ var owners = mongoose.model('owner', ownerSchema);
 
 var flats = mongoose.model('flat', flatSchema);
 
+var receipts = mongoose.model('receipt', receiptsSchema);
+
 // Bootstrap express
 
 var app = express();
 
+var bodyParser = require('body-parser');
+app.use(bodyParser());
+
+var server = app.listen(8081, function () {
+
+    var host = server.address().address
+    var port = server.address().port
+
+    console.log("Example app listening at http://locahost:%s", port)
+
 // URLS management
 
+app.post('/',function(req, res){
+
+		var Receipt = new receipts({
+        id : req.body.id,
+        receiptId : req.body.receiptId ,
+        amount : req.body.amount ,
+        date : req.body.date ,
+        paymentMode: req.body.paymentMode,
+        paymentTyp: req.body.paymentTyp,
+        remarks: req.body.remarks ,
+        received: req.body.received,
+        isValid: false
+        });
+		Receipt.save(function(err, Receipt) {
+			if (err){
+				return res.send(500, err);
+			}
+			return res.json(Receipt);
+		});
+        console.log(Receipt)
+	})
 
 app.get('/tenantDetails', function (req, res) {
     tenants.find({}, function (err, docs) {
@@ -95,24 +140,22 @@ app.get('/flatDetails', function (req, res) {
     });
 });
 
+app.get('/receiptDetails', function (req, res) {
+    console.log('Got Get Call');
+    receipts.find({}, function (err, docs) {
+        res.json({ docs: docs });
+    });
+});
 
-app.get('/tenants', function (req, res) {
+
+app.get('/dashboard', function (req, res) {
     res.sendFile(__dirname + '/dashboard.html');
 });
 
-app.get('/owners', function (req, res) {
-    res.sendFile(__dirname + '/dashboard.html');
+
 });
 
-app.get('/flats', function (req, res) {
-    res.sendFile(__dirname + '/dashboard.html');
+app.get('/receipts', function (req, res) {
+    res.sendFile(__dirname + '/receipts.html');
 });
 
-var server = app.listen(8081, function () {
-
-    var host = server.address().address
-    var port = server.address().port
-
-    console.log("Example app listening at http://locahost:%s", port)
-
-})

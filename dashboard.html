@@ -97,8 +97,8 @@
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
-                        <li class="active"><a href="file:./dashboard.html">Dashboard</a></li>
-                        <li class="active"><a href="file:./receipts.html">Receipts</a></li>
+                        <li class="active" ng-click="searched = false;flatNumberEntered='' "><a href="/dashboard">Dashboard</a></li>
+                        <li class="active"><a href="/receipts">Receipts</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -114,24 +114,27 @@
             </div>
             <button type="submit" class="btn btn-default" ng-click="getFlatDetails(flatNumberEntered)">Submit</button>
         </form>
+        <div class="container" ng-hide="searched" ng-init="getDetails()">              <h2>Flat Details</h2>
 
-        <div class="container" ng-hide="searched">
-            <h2>Flat Details</h2>
-
-            <table class="table table-hover">
+            <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr>
                         <th>Flat Number</th>
                         <th>Name</th>
                         <th>Phone Number</th>
+                        <th>Dues</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="x in owners">
+                <tbody ng-repeat="x in owners" >
                     <tr>
-
-                        <td>{{x.FLAT_NO}}</td>
-                        <td>{{x.LAST_NUMBER}}</td>
+                        <td>{{x.ownedFlats}}</td> 
+                        <td>{{x.FIRST_NAME}} {{x.LAST_NAME}}</td>
                         <td>{{x.PHONE_NUMBERS}}</td>
+                            
+                        <td  style="background-color:red" width="1px" ng-show="x.dues==1"></td>
+            
+                        <td  style="background-color:green" width="1px" ng-show="x.dues==0"></td>
+
                     </tr>
 
                 </tbody>
@@ -188,7 +191,7 @@
 
     <script>
         var app = angular.module('myApp', []);
-        app.controller('customersCtrl', function ($scope, $http) {
+        app.controller('customersCtrl', function ($scope, $http, DataService) {
 
             $scope.searched = false;
 
@@ -196,39 +199,141 @@
             $scope.ownername = "";
             $scope.ownerphone = "";
             $scope.owneraddress = "";
-
+            $scope.flatNumberEntered;
             $scope.enteredValue = "";
 
             $scope.registrationnumber = "";
-            $scope.getFlatDetails = function (inputsearch) {
-                $scope.searched = true;
+            
+            $scope.color =[ 'red' , 'green' ];
+            
+            $scope.getFlatDetails = function (inputsearch) 
+            {
+                
+                if(inputsearch === "")
+                {
+                    $scope.registrationnumber="";
+                    $scope.ownerid="";
+                    $scope.ownername="";
+                    $scope.ownerphone="";
+                    $scope.owneraddress="";
+                }
+                else
+                {
+                    $scope.searched = true;
+                    console.log(inputsearch);
+                    for (var i = 0; i < $scope.flat.length; i++) 
+                    {
+                        if ($scope.flat[i].FLAT_NO === inputsearch) 
+                        {
+                            console.log($scope.flat[i].FLAT_NO);
+                            $scope.registrationnumber = $scope.flat[i].REGISTRATION_NUMBER;
+                            $scope.ownerid = $scope.flat[i].OWNERS;
 
-                for (var i = 0; i < $scope.flat.length; i++) {
-                    if ($scope.names.flat_no === inputsearch) {
-                        $scope.registrationnumber = $scope.names.REGISTRATION_NUMBER;
-                        $scope.ownerid = $scope.names.OWNER_ID;
+                            for (var j = 0; j < $scope.owners.length; j++) 
+                            {
+                                if($scope.ownerid === $scope.owners[j].OWNER_ID)
+                                {
+                                    $scope.ownername = $scope.owners[j].FIRST_NAME +" "+ $scope.owners[j].LAST_NAME;
+                                    $scope.ownerphone = $scope.owners[j].PHONE_NUMBERS;
+                                    $scope.owneraddress = $scope.owners[j].CITY;                                
+                                }
 
-                        for (var j = 0; v < $scope.owners.length; j++) {
-                            $scope.ownername = $scope.owners.LAST_NAME;
-                            $scope.ownerphone = $scope.owners.PHONE_NUMBERS;
-                            $scope.owneraddress = $scope.owners.CITY;
+                            }
                         }
                     }
+
                 }
             }
+         
+            $scope.getDetails = function() {
 
+                DataService.getOwnersData().then(
+                    $scope.getOwnersDataSuccessHandler
+                );
+                
+
+            }
+
+            
+            $scope.getOwnersDataSuccessHandler = function(response)
+            {
+                console.log(response);
+                $scope.owners = response.data.docs;
+                console.log($scope.owners);
+                $scope.getOwnerDetails();
+                $scope.getRandomSpan();
+            }
+            
+            $scope.getOwnerDetails = function()
+            {
+            //     console.log($scope.owners);
+                for(var i=0;i< $scope.owners.length; i++)
+                {
+                    $scope.getOwnedFlats(i); 
+                }    
+            }
+            
+            $scope.getOwnedFlats = function(particularOwner)
+            {
+                i = particularOwner;
+
+                $scope.ownerId = $scope.owners[particularOwner].OWNER_ID; 
+                $scope.owners[particularOwner].ownedFlats = []; 
+                
+                for(var i =0; i< $scope.flat.length; i++)
+                {
+                    if($scope.flat[i].OWNERS == $scope.ownerId)
+                    {
+                        $scope.owners[particularOwner].ownedFlats.push($scope.flat[i].FLAT_NO);
+                    }
+                }
+                
+            }
+            
+            $scope.getRandomSpan =function()
+            {
+                for(var i=0;i<$scope.owners.length;i++)
+                {
+                    $scope.owners[i].dues=Math.floor(Math.random()*2);
+                }
+            };
+
+
+                            
             $http.get("/flatDetails")
             .success(function (response) { $scope.flat = response.docs; });
 
-            $http.get("/ownerDetails")
-            .success(function (response) { $scope.owners = response.docs; });
 
             $http.get("/tenantDetails")
             .success(function (response) { $scope.tenants = response.docs; });
 
+            
+
         });
 
 
+        app.factory("DataService",function($http,$location){
+        
+            var _getDataService = 
+            {
+                
+                getOwnersData : function()
+                {
+            	   return $http.get('/ownerDetails');
+                },
+                getFlatsData : function()
+                {
+                    return $http.get('/flatDetails');
+                },
+                getTenantsData : function()
+                {
+                    return $http.get('/tenantDetails');
+                }                
+            
+            }
+            
+            return _getDataService;
+        });
 
     </script>
 
