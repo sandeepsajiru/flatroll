@@ -18,67 +18,6 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $(".accordion h3:first").addClass("active");
-            $(".accordion p:not(:first)").hide();
-
-            $(".accordion h3").click(function () {
-                $(this).next("p").slideToggle("slow")
-                .siblings("p:visible").slideUp("slow");
-                $(this).toggleClass("active");
-                $(this).siblings("h3").removeClass("active");
-            });
-
-        });
-    </script>
-
-
-    <style type="text/css">
-        body {
-            margin: 10px auto;
-            width: 100%;
-            font: 75%/120% Arial, Helvetica, sans-serif;
-        }
-
-        .accordion {
-            width: 100%;
-            float: right;
-            border-bottom: solid 1px #c4c4c4;
-        }
-
-            .accordion h3 {
-                background: #e9e7e7 url(images/arrow-square.gif) no-repeat right -51px;
-                padding: 7px 15px;
-                margin: 0;
-                font: bold 120%/100% Arial, Helvetica, sans-serif;
-                border: solid 1px #c4c4c4;
-                border-bottom: none;
-                cursor: pointer;
-            }
-
-                .accordion h3:hover {
-                    background-color: #e3e2e2;
-                }
-
-                .accordion h3.active {
-                    background-position: right 5px;
-                }
-
-            .accordion p {
-                background: #f7f7f7;
-                margin: 0;
-                padding: 10px 15px 20px;
-                border-left: solid 1px #c4c4c4;
-                border-right: solid 1px #c4c4c4;
-            }
-
-        body, td, th {
-            font-size: 16px;
-        }
-    </style>
 </head>
 
 <body>
@@ -97,7 +36,7 @@
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
-                        <li class="active" ng-click="searched = false;flatNumberEntered='' "><a href="/dashboard">Dashboard</a></li>
+                        <li class="active" ng-click="searched = false;flatNumberEntered='' "><a href="">Dashboard</a></li>
                         <li class="active"><a href="/receipts">Receipts</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -111,10 +50,14 @@
         <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
                 <input type="text" class="form-control" ng-model="flatNumberEntered" placeholder="Search" size="150" maxlength="200" width="50 cm" />
-            </div>
+            
             <button type="submit" class="btn btn-default" ng-click="getFlatDetails(flatNumberEntered)">Submit</button>
+                </div>
         </form>
-        <div class="container" ng-hide="searched" ng-init="getDetails()">              <h2>Flat Details</h2>
+    
+        <div class="container" ng-hide="searched" ng-init="getDetails()"> 
+            <br />
+            <h2>Flat Details</h2>
 
             <table class="table table-hover" style="width:100%">
                 <thead>
@@ -122,14 +65,16 @@
                         <th>Flat Number</th>
                         <th>Name</th>
                         <th>Phone Number</th>
+                        <th>Email Id</th>
                         <th>Dues</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="x in owners" >
+                <tbody ng-repeat="x in tenants" >
                     <tr>
-                        <td>{{x.ownedFlats}}</td> 
+                        <td>{{x.FLAT_NO}}</td> 
                         <td>{{x.FIRST_NAME}} {{x.LAST_NAME}}</td>
                         <td>{{x.PHONE_NUMBERS}}</td>
+                        <td>{{x.EMAIL_IDS}}</td>
                             
                         <td  style="background-color:red" width="1px" ng-show="x.dues==1"></td>
             
@@ -142,51 +87,197 @@
             </table>
         </div>
 
-        <div class="container-fluid" ng-show="searched">
-            <form class="form-inline" role="form">
-
-                <div class="accordion">
-
-                    <h3>OWNER DETAILS</h3>
-                    <p>
-                        Name of Owner : {{ownername}}
-                        <br /><br />
-                        E-Mail Id : {{owner.email}}
-                        <br /><br />
-                        Phone / Mobile : {{ownerphone}}
-                        <br /><br />
-                        Permanent Address Of Owner : {{owneraddress}}
-                        <br /><br />
-                        Current Address of Owner : {{owneraddress}}
-                        <br /><br />
-                    </p>
-                    <h3>TENANT DETAILS</h3>
-                    <p>
-                        Name : {{tenant.name}}
-                        <br /><br />
-                        Phone / Mobile : {{tenant.mobile}}
-                        <br /><br />
-                        E-Mail Id : {{tenant.email}}
-                        <br /><br />
-                    </p>
-                    <h3>MONTHLY STATUS</h3>
-                    <p>JAN      FEB MAR APR MAY JUN JUL  AUG SEP OCT NOV DEC</p>
-
-                    <h3>FLAT DETAILS    </h3>
-                    <p>
-                        Registration Number : {{registrationnumber}}
-                        <br /><br />
+    <div class="container" ng-show="searched">
+        <br />
+        <br />
+        <br />
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+              OWNER DETAILS  
+            </a>
+                <div class="pull-right btn-group btn-group-xs">
+                <button class="btn btn-default btn-xs" ng-click="editable()">Edit</button>
+              </div>
+                <div class="pull-right btn-group btn-group-xs">
+                <button class="btn btn-default btn-xs" ng-disabled="editorEnable==false" ng-click="updateOData()">Save</button>
+              </div>
 
 
-                    </p>
-
-
-                </div>
-            </form>
+          </h4>
         </div>
+        <div id="collapseOne" class="panel-collapse collapse in">
+          <div class="panel-body">
+              <div class="row-fluid">
+                 
+                <div ng-hide="editorEnable">
+                    
+                     Name of Owner : {{ownerfirstname + " "+ownermiddlename+" " +ownerlastname }}
+                    <br />
+              </div>
+                <div ng-show="editorEnable" class ="span8">
+                     
+                Name of Owner :<input type="text" ng-model="ownerfirstname" ng-show="editorEnable" value="ownername"></input>
+              
+                </div>
+              <br />
+              
+            
+            <div ng-hide="editorEnable" >
+                
+                E-Mail Id : {{owneremail}}
+                <br />
+            </div>
+            <div ng-show ="editorEnable"  class ="span8">
+                
+                E-Mail Id : <input type="text" ng-model="owneremail" ng-show="editorEnable"  value="owneremail"></input>
+            
+            
+            </div>
+            <br />
+            
+                
+        <div ng-hide="editorEnable" >
+                Phone / Mobile : {{ownerphone}}
+            <br />
+        </div>
+        <div ng-show ="editorEnable"  class ="span8">
+                Phone / Mobile : <input type="text" ng-model="ownerphone" ng-show="editorEnable"  value="ownerphone"></input>
+            
+            
+        </div>
+          <br />
+          
+                    
+            <div ng-hide="editorEnable" >
+                
+                Permanent Address Of Owner : {{owneraddress}}
+                <br />
+            </div>
+            <div ng-show ="editorEnable"  class ="span8">
+                
+                Permanent Address of Owner : <input type="text" ng-model="owneraddress" ng-show="editorEnable"  value="owneraddress"></input>
+            
+            
+            </div>
+            <br />
+                
+        <div ng-hide="editorEnable" >
+                City of Owner : {{ownercity}}
+            <br />
+        </div>
+        <div ng-show ="editorEnable"  class ="span8" >
+                City of Owner : <input type="text" ng-model="ownercity" ng-show="editorEnable"  value="ownercity"></input>
+            <br />
 
 
+          </div>
+        <br />
+        </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+               TENANT DETAILS 
+            </a>
+              <div class="pull-right btn-group btn-group-xs">
+                <button class="btn btn-default btn-xs" ng-click="edit()">Edit</button>
+              </div>
+                <div class="pull-right btn-group btn-group-xs">
+                <button class="btn btn-default btn-xs" ng-disabled="editorEnable1==false" ng-click="updateTData()">Save</button>
+              </div>
 
+
+          </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+              <div class="row-fluid">
+                        <p>
+                            <div ng-hide="editorEnable1" >
+                            Name : {{tenantfirstname +" "+tenantmiddlename + " " + tenantlastname}}
+                            
+              </div>
+                  <br />
+                            
+        <div ng-show ="editorEnable1"  class ="span8" >
+                Name : <input type="text" ng-model="tenantfirstname" ng-show="editorEnable1"  value="tenantname"></input>
+            <br />
+
+          </div>              
+              
+            <div ng-hide="editorEnable1" >
+                            Phone / Mobile : {{tenantmobile}}
+          </div>
+              
+              <br />
+                  <div ng-show ="editorEnable1"  class ="span8" >
+                Phone / Mobile : <input type="text" ng-model="tenantmobile" ng-show="editorEnable1"  value="tenantmobile"></input>
+            <br />
+
+          </div>              
+
+                            
+                <div ng-hide="editorEnable1" >
+                            E-Mail Id : {{tenantemail}}
+          </div>
+            
+            <br />
+            <div ng-show ="editorEnable1"  class ="span8" >
+                E-Mail Id : <input type="text" ng-model="tenantemail" ng-show="editorEnable1"  value="tenantemail"></input>
+            <br />
+
+          </div>              
+
+                <br />           
+                    
+                        </p>
+        </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+              MONTHLY STATUS
+            </a>
+
+          </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse">
+          <div class="panel-body">
+              <p>JAN FEB MAR APR MAY JUN JUL  AUG SEP OCT NOV DEC</p>      </div>
+        </div>
+      </div>
+
+          <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+              FLAT DETAILS
+            </a>
+
+          </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse">
+          <div class="panel-body">
+                        <p>
+                            Registration Number : {{registrationnumber}}
+                            <br /><br />
+                        </p>
+
+            </div>
+        </div>
+      </div>
+
+    </div>
+
+    </div>
     </div>
 
     <script>
@@ -194,17 +285,82 @@
         app.controller('customersCtrl', function ($scope, $http, DataService) {
 
             $scope.searched = false;
-
+            
+            $scope.ownerdbid="";
+            $scope.flatdbid="";
+            $scope.tenantdbid="";
+            
             $scope.ownerid = "";
             $scope.ownername = "";
             $scope.ownerphone = "";
             $scope.owneraddress = "";
+            $scope.owneremail="";
+            $scope.ownercity = "";
             $scope.flatNumberEntered;
             $scope.enteredValue = "";
+            $scope.editorEnable=false;
+            $scope.editorEnable1=false;
+            
+            $scope.tenantfirstname="";
+            $scope.tenantmiddlename="";
+            $scope.tenantlastname="";
+            $scope.tenantemail="";
+            $scope.tenantmobile="";        
 
             $scope.registrationnumber = "";
+            $scope.flatno="";
             
             $scope.color =[ 'red' , 'green' ];
+            
+            $scope.editable = function()
+            {
+                $scope.editorEnable=true;
+            }
+            $scope.edit = function()
+            {
+                $scope.editorEnable1=true;
+            }
+            
+            $scope.updateOData = function()
+            {
+            $scope.editorEnable=false;
+                
+            var request= {
+                    OWNER_ID : $scope.ownerid,
+                    FIRST_NAME : $scope.ownerfirstname,
+                    MIDDLE_NAME :$scope.ownermiddlename,
+                    LAST_NAME : $scope.ownerlastname,
+                    ADDRESS : $scope.owneraddress,
+                    CITY : $scope.ownercity,
+                    PHONE_NUMBERS : $scope.ownerphone,
+                    EMAIL_IDS : $scope.owneremail
+    
+                };
+
+                
+                $http.put('/owner/'+ $scope.ownerdbid,request);
+            }
+
+            $scope.updateTData = function()
+            {
+            $scope.editorEnable1=false;
+                
+            var request= {
+                    TENANT_ID : $scope.tenantid,
+                    FLAT_NO : $scope.flatno,
+                    FIRST_NAME : $scope.tenantfirstname,
+                    MIDDLE_NAME : $scope.tenantmiddlename,
+                    LAST_NAME : $scope.tenantlastname,
+                    EMAIL_IDS : $scope.tenantemail,
+                    PHONE_NUMBERS : $scope.tenantmobile
+                    
+                };
+
+                
+                $http.put('/tenant/'+ $scope.tenantdbid,request);
+            }
+            
+            
             
             $scope.getFlatDetails = function (inputsearch) 
             {
@@ -212,10 +368,24 @@
                 if(inputsearch === "")
                 {
                     $scope.registrationnumber="";
+                    $scope.flatno="";
+                    
                     $scope.ownerid="";
-                    $scope.ownername="";
+                    $scope.ownerfirstname="";
+                    $scope.ownerlastname="";
                     $scope.ownerphone="";
                     $scope.owneraddress="";
+                    $scope.ownercity="";
+                    
+                    $scope.flatdbid="";
+                    $scope.ownerdbid="";
+                    $scope.tenantdbid="";
+                    
+                    $scope.tenantemail="";
+                    $scope.tenantfirstname="";
+                    $scope.tenantlastname="";
+                    $scope.tenantmiddlename="";
+                    $scope.tenantmobile="";
                 }
                 else
                 {
@@ -228,18 +398,39 @@
                             console.log($scope.flat[i].FLAT_NO);
                             $scope.registrationnumber = $scope.flat[i].REGISTRATION_NUMBER;
                             $scope.ownerid = $scope.flat[i].OWNERS;
-
+                            $scope.flatdbid =$scope.flat[i]._id;
+                            $scope.flatno = $scope.flat[i].FLAT_NO;
+                            
                             for (var j = 0; j < $scope.owners.length; j++) 
                             {
                                 if($scope.ownerid === $scope.owners[j].OWNER_ID)
                                 {
-                                    $scope.ownername = $scope.owners[j].FIRST_NAME +" "+ $scope.owners[j].LAST_NAME;
+                                    $scope.ownerfirstname = $scope.owners[j].FIRST_NAME;
+                                    $scope.ownermiddlename = $scope.owners[j].MIDDLE_NAME;
+                                    $scope.ownerlastname = $scope.owners[j].LAST_NAME;
                                     $scope.ownerphone = $scope.owners[j].PHONE_NUMBERS;
-                                    $scope.owneraddress = $scope.owners[j].CITY;                                
+                                    $scope.owneremail = $scope.owners[j].EMAIL_IDS;
+                                    $scope.ownercity = $scope.owners[j].CITY;
+                                    $scope.owneraddress = $scope.owners[j].ADDRESS;
+                                    $scope.ownerdbid = $scope.owners[j]._id;
                                 }
 
                             }
                         }
+                    }
+                    
+                    for(var k=0;k < $scope.tenants.length;k++)
+                    {
+                        if($scope.tenants[k].FLAT_NO === inputsearch)
+                        {
+                            $scope.tenantfirstname = $scope.tenants[k].FIRST_NAME;
+                            $scope.tenantmiddlename = $scope.tenants[k].MIDDLE_NAME;
+                            $scope.tenantlastname = $scope.tenants[k].LAST_NAME;
+                            $scope.tenantemail= $scope.tenants[k].EMAIL_IDS;
+                            $scope.tenantmobile = $scope.tenants[k].PHONE_NUMBERS;
+                            $scope.tenantdbid = $scope.tenants[k]._id;
+                        }
+                        
                     }
 
                 }
@@ -295,6 +486,7 @@
                 for(var i=0;i<$scope.owners.length;i++)
                 {
                     $scope.owners[i].dues=Math.floor(Math.random()*2);
+                    $scope.tenants[i].dues=Math.floor(Math.random()*2);
                 }
             };
 
@@ -313,7 +505,7 @@
 
 
         app.factory("DataService",function($http,$location){
-        
+    
             var _getDataService = 
             {
                 
@@ -328,7 +520,7 @@
                 getTenantsData : function()
                 {
                     return $http.get('/tenantDetails');
-                }                
+                },
             
             }
             
@@ -336,6 +528,20 @@
         });
 
     </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>
