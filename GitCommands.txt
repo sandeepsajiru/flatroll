@@ -1,0 +1,10 @@
+To Clone Code from GitHub to your local dir.
+- git clone <URL>
+
+To Get The Latest Code from Git Repository online.
+- git pull
+
+How do we push our own changes
+1.  Stage our changes [Move from unstaged to staged]
+2.  Commit the Changes [This puts the changes in our local git account]
+3.  Push the chnages online [This puts the code on GitHub.com]
