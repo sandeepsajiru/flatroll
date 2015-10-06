@@ -1,4 +1,6 @@
 var express = require('express');
+var logger = require('morgan');
+var bodyParser = require('body-parser');
 
 // Mongoose import
 
@@ -86,16 +88,16 @@ var receipts = mongoose.model('receipt', receiptsSchema);
 // Bootstrap express
 
 var app = express();
-
-var bodyParser = require('body-parser');
-app.use(bodyParser());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var server = app.listen(8081, function () {
 
     var host = server.address().address
     var port = server.address().port
 
-    console.log("Example app listening at http://locahost:%s", port)
+    console.log("Example app listening at http://localhost:%s", port)
 
 // URLS management
 
@@ -134,14 +136,12 @@ app.get('/ownerDetails', function (req, res) {
 });
 
 app.get('/flatDetails', function (req, res) {
-    console.log('Got Get Call');
     flats.find({}, function (err, docs) {
         res.json({ docs: docs });
     });
 });
 
 app.get('/receiptDetails', function (req, res) {
-    console.log('Got Get Call');
     receipts.find({}, function (err, docs) {
         res.json({ docs: docs });
     });
@@ -159,3 +159,4 @@ app.get('/receipts', function (req, res) {
     res.sendFile(__dirname + '/receipts.html');
 });
 
+	
