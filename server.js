@@ -213,14 +213,12 @@ app.get('/ownerDetails', function (req, res) {
         res.json({ docs: docs });
     });
 });
-/*    
-var d = new Date();
-
-var currMonth = d.getMonth();    
-    
-var dueStatus = new Array();
     
 app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
+	var d = new Date();
+	var currMonth = d.getMonth();    
+    var dueStatus = new Array();
+
     receipts.find({
                 flatNumber : req.params.flatNumber, 
                 year : req.params.year,
@@ -231,7 +229,7 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
             })
             .toArray(function(err,results){
             console.log(results)
-            // 1 for green, 0 for red, 2 for green .
+            // 1 for green, 0 for red, 2 for gray.
             for(var i=0; i < results.length; i++)
             {
                 dueStatus[result[i]] = 1;
@@ -246,8 +244,7 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
             }
         res.json({ dueStatus: dueStatus }); 
 });
-
-});*/
+});
 
 app.get('/flatDetails', function (req, res) {
     console.log('Got Get Call');
