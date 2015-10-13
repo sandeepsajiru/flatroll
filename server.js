@@ -64,22 +64,16 @@ var flatSchema = new Schema(
 
 var receiptsSchema = new Schema(
 {
-    paymentItems:'string',
-    paymentTypes:'string',
-    id:'string',
-    idEditorEnabled: 'string',
+    flatNo:'string',
     receiptId: 'string',
-    receiptIdEditorEnabled: 'string',
     amount: 'string',
-    amountEditorEnabled: 'string',
     date: 'string',
-    dateEditorEnabled: 'string',
     paymentMode: 'string',
     paymentTyp: 'string',
     remarks: 'string',
-    remarksEditorEnabled: 'string',
     received: 'string',
-    receivedEditorEnabled: 'string'    
+    year: 'string',
+    months: ['string']    
 });
 // Mongoose Model definition
 
@@ -188,22 +182,16 @@ app.put('/tenant/:id',(function(req,res){
 app.post('/',function(req, res){
 
 		var Receipt = new receipts({
-        paymentItems : req.body.paymentItems,
-        paymentTypes : req.body.paymentTypes,
-        id : req.body.id,
-        idEditorEnabled  : req.body.idEditorEnabled ,
+        flatNo : req.body.flatNo,
         receiptId : req.body.receiptId ,
-        receiptIdEditorEnabled : req.body.receiptIdEditorEnabled ,
         amount : req.body.amount ,
-        amountEditorEnabled : req.body.amountEditorEnabled ,
         date : req.body.date ,
-        dateEditorEnabled : req.body.dateEditorEnabled ,
         paymentMode: req.body.paymentMode,
         paymentTyp: req.body.paymentTyp,
         remarks: req.body.remarks ,
-        remarksEditorEnabled: req.body.remarksEditorEnabled ,
         received: req.body.received ,
-        receivedEditorEnabled: req.body.receivedEditorEnabled
+	year: req.body.year ,
+	months: req.body.months
         });
 		Receipt.save(function(err, Receipt) {
 			if (err){
@@ -225,6 +213,41 @@ app.get('/ownerDetails', function (req, res) {
         res.json({ docs: docs });
     });
 });
+/*    
+var d = new Date();
+
+var currMonth = d.getMonth();    
+    
+var dueStatus = new Array();
+    
+app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
+    receipts.find({
+                flatNumber : req.params.flatNumber, 
+                year : req.params.year,
+                paymentTyp : "Maitenance"} ,
+                  {
+                months: 1,
+                _id: 0
+            })
+            .toArray(function(err,results){
+            console.log(results)
+            // 1 for green, 0 for red, 2 for green .
+            for(var i=0; i < results.length; i++)
+            {
+                dueStatus[result[i]] = 1;
+            }
+            for(var j=i; j < currMonth; j++)
+            {
+                dueStatus[j] = 0 ;
+            }
+            for(var k=currMonth; k < 12; k++ )
+            {
+                dueStatus[k] = 2 ;
+            }
+        res.json({ dueStatus: dueStatus }); 
+});
+
+});*/
 
 app.get('/flatDetails', function (req, res) {
     console.log('Got Get Call');
