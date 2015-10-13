@@ -214,23 +214,53 @@ app.post('/',function(req, res){
         console.log(Receipt)
 	});
 
-app.get('/tenantDetails', function (req, res) {
-    tenants.find({}, function (err, docs) {
-        res.json({ docs: docs });
-    });
+jsonConcat = require("json-concat");    
+
+var d = new Date();
+
+var currMonth = d.getMonth();    
+    
+var dueStatus = new Array();
+    
+app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
+    receipts.find({
+                flatNumber : req.params.flatNumber, 
+                year : req.params.year,
+                paymentTyp : "Maitenance"} ,
+                  {
+                months: 1,
+                _id: 0
+            })
+            .toArray(function(err,results){
+            console.log(results)
+            // 1 for green, 0 for red, 2 for green .
+            for(var i=0; i < results.length; i++)
+            {
+                dueStatus[result[i]] = 1;
+            }
+            for(var j=i; j < currMonth; j++)
+            {
+                dueStatus[j] = 0 ;
+            }
+            for(var k=currMonth; k < 12; k++ )
+            {
+                dueStatus[k] = 2 ;
+            }
+        res.json({ dueStatus: dueStatus }); 
 });
 
-app.get('/ownerDetails', function (req, res) {
-    owners.find({}, function (err, docs) {
-        res.json({ docs: docs });
-    });
 });
-
+    
 app.get('/flatDetails', function (req, res) {
-    console.log('Got Get Call');
-    flats.find({}, function (err, docs) {
-        res.json({ docs: docs });
+    tenants.find({}, function (err, docs1) {
     });
+    owners.find({}, function (err, docs2) {
+    });
+    flats.find({}, function (err, docs3) {
+    });
+    var docs = jsonConcat("docs1.json", "docs2.json", "docs3.json");
+    console.log(docs);  
+    res.json({ docs: docs });
 });
 
 app.get('/receiptDetails', function (req, res) {
@@ -238,15 +268,6 @@ app.get('/receiptDetails', function (req, res) {
     receipts.find({}, function (err, docs) {
         res.json({ docs: docs });
     });
-});
-
-
-app.get('/tenants', function (req, res) {
-    res.sendFile(__dirname + '/dashboard.html');
-});
-
-app.get('/owners', function (req, res) {
-    res.sendFile(__dirname + '/dashboard.html');
 });
 
 app.get('/flats', function (req, res) {

@@ -1,14 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html lang="en" ng-app="myApp">
+  <head>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    <meta name="viewport" content="initial-scale=1" />
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Detail Page</title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/resources/demos/style.css" />
+    
     <script type="text/javascript" src="jquery.js"></script>
 
 
@@ -18,12 +20,77 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 
-</head>
+      <style>
+      md-sidenav, md-sidenav.md-locked-open, md-sidenav.md-closed.md-locked-open-add-active 
+        {
+        min-width: 200px !important;
+        width: 50vw !important;
+        max-width: 200px !important;
+        }
+      </style>
+      
+            <script type="text/javascript">
+$(document).ready(function(){
+	
+	$(".accordion h3:first").addClass("active");
+	$(".accordion p:not(:first)").hide();
 
-<body>
-    <div ng-app="myApp" ng-controller="customersCtrl">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
+	$(".accordion h3").click(function(){
+		$(this).next("p").slideToggle("slow")
+		.siblings("p:visible").slideUp("slow");
+		$(this).toggleClass("active");
+		$(this).siblings("h3").removeClass("active");
+	});
+
+});
+</script>
+
+
+
+          
+
+<style type="text/css">
+body {
+	margin: 10px auto;
+	width: 100%;
+	font: 75%/120% Arial, Helvetica, sans-serif;
+}
+.accordion {
+	width: 100%;
+	float:right;
+	border-bottom: solid 1px #c4c4c4;
+}
+.accordion h3 {
+	background: #e9e7e7 url(images/arrow-square.gif) no-repeat right -51px;
+	padding: 7px 15px;
+	margin: 0;
+	font: bold 120%/100% Arial, Helvetica, sans-serif;
+	border: solid 1px #c4c4c4;
+	border-bottom: none;
+	cursor: pointer;
+}
+.accordion h3:hover {
+	background-color: #e3e2e2;
+}
+.accordion h3.active {
+	background-position: right 5px;
+}
+.accordion p {
+	background: #f7f7f7;
+	margin: 0;
+	padding: 10px 15px 20px;
+	border-left: solid 1px #c4c4c4;
+	border-right: solid 1px #c4c4c4;
+}
+body,td,th {
+	font-size: 16px;
+}
+</style>
+  </head>
+  <body  >
+      <div ng-app="myApp" ng-controller="customersCtrl">
+              <nav class="navbar navbar-inverse">
+            <div class="container-fluid" >
                 <div class="navbar-header ">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                         <span class="icon-bar"></span>
@@ -47,242 +114,266 @@
             </div>
         </nav>
 
-        <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
+              <form class="navbar-form navbar-left" role="search">
+            <div class="form-group" >
                 <input type="text" class="form-control" ng-model="flatNumberEntered" placeholder="Search" size="150" maxlength="200" width="50 cm" />
-            
-            <button type="submit" class="btn btn-default" ng-click="getFlatDetails(flatNumberEntered)">Submit</button>
-                </div>
-        </form>
-    
-        <div class="container" ng-hide="searched" ng-init="getDetails()"> 
-            <br />
-            <h2>Flat Details</h2>
+                
+                                         
+                <md-button class="md-icon-button md-primary md-hue-3" aria-label="Settings" ng-click="getFlatDetails(flatNumberEntered )">
+                <span class="glyphicon glyphicon-search"></span>
+                <md-tooltip> Search</md-tooltip>
+                </md-button>
+        </div>
+                  
 
+            
+
+        </form>
+
+      
+    
+      
+    <!-- Angular Material Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+      
+        <div class="container" ng-hide="searched" ng-init="getDetails()" > 
+            <h2>
+                <br/>
+            
+                  <md-button class="md-fab md-icon-button md-primary md-hue-3" ng-click="altersidenav()">
+                      <span class="glyphicon glyphicon-filter"></span>
+                        <md-tooltip> Filters</md-tooltip>
+                  </md-button>
+                  
+                
+
+
+            Flat Details</h2>
+                  
+                  <md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2" md-is-open="!showsidenav" ng-cloak>
+                      
+                    
+                <h3 > Filters</h3>  
+                      <hr/>
+                      <br/><br/> 
+            <md-checkbox ng-model="radioflatno">Flat No</md-checkbox>
+                      
+            <md-checkbox ng-model="radioname">Occupant Name</md-checkbox>
+                      
+            <md-checkbox ng-model="radiophonenumber">Phone Number</md-checkbox>
+                      
+            <md-checkbox ng-model="radioemail">Email ID</md-checkbox>
+                      
+            <md-checkbox ng-model="radiodues">Dues</md-checkbox>
+      
+            <md-button class="md-raised" ng-click="altersidenav()">Close</md-button> 
+                  </md-sidenav>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Flat Number</th>
-                        <th>Name</th>
-                        <th>Phone Number</th>
-                        <th>Email Id</th>
-                        <th>Dues</th>
+                        <th ng-hide="radioflatno">Flat Number</th>
+                        <th ng-hide="radioname">
+            
+                            <span class="glyphicon glyphicon-user"></span>
+                            Occupant Name</th>
+                        <th ng-hide="radiophonenumber">
+                            
+                            <span class="glyphicon glyphicon-earphone"></span>
+                            Phone Number</th>
+                        <th ng-hide="radioemail">
+                            
+                            <span class="glyphicon glyphicon-envelope"></span>
+                            Email Id</th>
+                        <th ng-hide="radiodues">Dues</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="x in tenants" >
+                <tbody ng-repeat="x in myjson " ng-click="getFlatDetails(x.FLAT_NO)" >
                     <tr>
-                        <td>{{x.FLAT_NO}}</td> 
-                        <td>{{x.FIRST_NAME}} {{x.LAST_NAME}}</td>
-                        <td>{{x.PHONE_NUMBERS}}</td>
-                        <td>{{x.EMAIL_IDS}}</td>
-                            
-                        <td  style="background-color:red" width="1px" ng-show="x.dues==1"></td>
-            
-                        <td  style="background-color:green" width="1px" ng-show="x.dues==0"></td>
-
+                        <td ng-hide="radioflatno">{{x.FLAT_NO}}</td>
+                        <td ng-hide="radioname">{{x.FIRST_NAME + " "+x.MIDDLE_NAME+ " "+x.LAST_NAME}}</td>
+                        <td ng-hide="radiophonenumber">{{x.PHONE_NUMBERS}}</td>
+                        <td ng-hide="radioemail">{{x.EMAIL_IDS}}</td>
+                        
+                        
+                        <td  style="background-color:red" width="1px" ng-show="x.dues==1 && !radiodues"></td>
+                
+                        <td  style="background-color:green" width="1px" ng-show="x.dues==0 && !radiodues"></td>
+                           
                     </tr>
-
+                
                 </tbody>
 
             </table>
         </div>
-
-    <div class="container" ng-show="searched">
+    
+    <div class="container" ng-show="searched" >
         <br />
         <br />
         <br />
-    <div class="panel-group" id="accordion">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-              OWNER DETAILS  
-            </a>
-                <div class="pull-right btn-group btn-group-xs">
-                <button class="btn btn-default btn-xs" ng-click="editable()">Edit</button>
-              </div>
-                <div class="pull-right btn-group btn-group-xs">
-                <button class="btn btn-default btn-xs" ng-disabled="editorEnable==false" ng-click="updateOData()">Save</button>
-              </div>
+        <div class="container-fluid" >
+<div class="accordion">    
+
+    
+	<h3>OWNER DETAILS        
+        <div class="pull-right btn-group btn-group-xs">
+
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#ownerModal" data-whatever="@mdo">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <md-tooltip> Edit</md-tooltip>
+        </button>
+        </div>
+    
+    </h3>
+	<p>Name of Owner : {{ownerfirstname + " "+ownermiddlename+" " +ownerlastname }}
+        <br /><br />
+E-Mail Id : {{owneremail}}
+        <br /><br />
+  Phone / Mobile : {{ownerphone}}
+	    <br /><br />
+Permanent Address Of Owner : {{owneraddress}}
+        <br /><br />
+ Current Address of Owner : {{ownercity}}
+        <br /><br />
+	</p>
+	<h3>TENANT DETAILS
+        <div class="pull-right btn-group btn-group-xs">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#tenantModal" data-whatever="@mdo">
+        <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+        </div>
+        </h3>
+	<p>Name : {{tenantfirstname +" "+tenantmiddlename + " " + tenantlastname}}
+      <br /><br />
+Phone / Mobile : {{tenantmobile}}
+        <br /><br />
+E-Mail Id : {{tenantemail}}
+        <br /><br />
+Occupation : 
+	</p>
+	<h3>MONTHLY STATUS</h3>
+    
+	<p>
+        JAN FEB MAR APR MAY JUN JUL  AUG SEP OCT NOV DEC
+    <br/>
+    <br/>
+                <label>Year</label>
+        <select ng-model="selectedyear" id="year"></select>
+        
+        {{selectedyear}}
+    
+    </p>
+    
+        <h3>FLAT DETAILS    </h3>
+	<p>Registration Number : {{registrationnumber}}
+      <br /><br />
+	</p>
 
 
-          </h4>
-        </div>
-        <div id="collapseOne" class="panel-collapse collapse in">
-          <div class="panel-body">
-              <div class="row-fluid">
-                 
-                <div ng-hide="editorEnable">
-                    
-                     Name of Owner : {{ownerfirstname + " "+ownermiddlename+" " +ownerlastname }}
-                    <br />
-              </div>
-                <div ng-show="editorEnable" class ="span8">
-                     
-                Name of Owner :<input type="text" ng-model="ownerfirstname" ng-show="editorEnable" value="ownername"></input>
-              
-                </div>
-              <br />
-              
-            
-            <div ng-hide="editorEnable" >
-                
-                E-Mail Id : {{owneremail}}
-                <br />
-            </div>
-            <div ng-show ="editorEnable"  class ="span8">
-                
-                E-Mail Id : <input type="text" ng-model="owneremail" ng-show="editorEnable"  value="owneremail"></input>
-            
-            
-            </div>
-            <br />
-            
-                
-        <div ng-hide="editorEnable" >
-                Phone / Mobile : {{ownerphone}}
-            <br />
-        </div>
-        <div ng-show ="editorEnable"  class ="span8">
-                Phone / Mobile : <input type="text" ng-model="ownerphone" ng-show="editorEnable"  value="ownerphone"></input>
-            
-            
-        </div>
-          <br />
-          
-                    
-            <div ng-hide="editorEnable" >
-                
-                Permanent Address Of Owner : {{owneraddress}}
-                <br />
-            </div>
-            <div ng-show ="editorEnable"  class ="span8">
-                
-                Permanent Address of Owner : <input type="text" ng-model="owneraddress" ng-show="editorEnable"  value="owneraddress"></input>
-            
-            
-            </div>
-            <br />
-                
-        <div ng-hide="editorEnable" >
-                City of Owner : {{ownercity}}
-            <br />
-        </div>
-        <div ng-show ="editorEnable"  class ="span8" >
-                City of Owner : <input type="text" ng-model="ownercity" ng-show="editorEnable"  value="ownercity"></input>
-            <br />
-
-
-          </div>
-        <br />
-        </div>
-        </div>
+</div>
+</div>
+        
+<div class="modal fade" id="ownerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">OWNER DETAILS</h4>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-               TENANT DETAILS 
-            </a>
-              <div class="pull-right btn-group btn-group-xs">
-                <button class="btn btn-default btn-xs" ng-click="edit()">Edit</button>
-              </div>
-                <div class="pull-right btn-group btn-group-xs">
-                <button class="btn btn-default btn-xs" ng-disabled="editorEnable1==false" ng-click="updateTData()">Save</button>
-              </div>
-
-
-          </h4>
-        </div>
-        <div id="collapseTwo" class="panel-collapse collapse">
-          <div class="panel-body">
-              <div class="row-fluid">
-                        <p>
-                            <div ng-hide="editorEnable1" >
-                            Name : {{tenantfirstname +" "+tenantmiddlename + " " + tenantlastname}}
-                            
-              </div>
-                  <br />
-                            
-        <div ng-show ="editorEnable1"  class ="span8" >
-                Name : <input type="text" ng-model="tenantfirstname" ng-show="editorEnable1"  value="tenantname"></input>
-            <br />
-
-          </div>              
-              
-            <div ng-hide="editorEnable1" >
-                            Phone / Mobile : {{tenantmobile}}
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="ownerfirstname" class="control-label">First Name:</label>
+            <input type="text" class="form-control" ng-model="ownerfirstname">
           </div>
-              
-              <br />
-                  <div ng-show ="editorEnable1"  class ="span8" >
-                Phone / Mobile : <input type="text" ng-model="tenantmobile" ng-show="editorEnable1"  value="tenantmobile"></input>
-            <br />
+           <div class="form-group">
+            <label for="ownermiddlename" class="control-label">Middle Name :</label>
+            <input type="text" class="form-control" ng-model="ownermiddlename">
+          </div>
+          <div class="form-group">
+            <label for="ownerlastname" class="control-label">Last Name :</label>
+            <input type="text" class="form-control" ng-model="ownerlastname">
+          </div>
+          <div class="form-group">
+            <label for="owneremail" class="control-label">Email ID :</label>
+            <input type="text" class="form-control" ng-model="owneremail">
+          </div>
+          <div class="form-group">
+            <label for="ownerphone" class="control-label">Phone Number :</label>
+            <input type="text" class="form-control" ng-model="ownerphone">
+          </div>
 
-          </div>              
-
-                            
-                <div ng-hide="editorEnable1" >
-                            E-Mail Id : {{tenantemail}}
+          <div class="form-group">
+            <label for="owneraddress" class="control-label">Address :</label>
+            <textarea class="form-control" ng-model="owneraddress"></textarea>
           </div>
             
-            <br />
-            <div ng-show ="editorEnable1"  class ="span8" >
-                E-Mail Id : <input type="text" ng-model="tenantemail" ng-show="editorEnable1"  value="tenantemail"></input>
-            <br />
-
-          </div>              
-
-                <br />           
-                    
-                        </p>
-        </div>
+        <div class="form-group">
+            <label for="ownercity" class="control-label">City :</label>
+            <input type="text" class="form-control" ng-model="ownercity">
           </div>
-        </div>
+
+        </form>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-              MONTHLY STATUS
-            </a>
-
-          </h4>
-        </div>
-        <div id="collapseThree" class="panel-collapse collapse">
-          <div class="panel-body">
-              <p>JAN FEB MAR APR MAY JUN JUL  AUG SEP OCT NOV DEC</p>      </div>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateOData()">Save Changes</button>
       </div>
-
-          <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-              FLAT DETAILS
-            </a>
-
-          </h4>
-        </div>
-        <div id="collapseFour" class="panel-collapse collapse">
-          <div class="panel-body">
-                        <p>
-                            Registration Number : {{registrationnumber}}
-                            <br /><br />
-                        </p>
-
-            </div>
-        </div>
+    </div>
+  </div>
+</div>
+        
+        <div class="modal fade" id="tenantModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Tenant DETAILS</h4>
       </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="tenantfirstname" class="control-label">First Name:</label>
+            <input type="text" class="form-control" ng-model="tenantfirstname">
+          </div>
+           <div class="form-group">
+            <label for="tenantmiddlename" class="control-label">Middle Name :</label>
+            <input type="text" class="form-control" ng-model="tenantmiddlename">
+          </div>
+          <div class="form-group">
+            <label for="tenantlastname" class="control-label">Last Name :</label>
+            <input type="text" class="form-control" ng-model="tenantlastname">
+          </div>
+          <div class="form-group">
+            <label for="tenantmobile" class="control-label">Phone Number :</label>
+            <input type="text" class="form-control" ng-model="tenantmobile">
+          </div>
+          <div class="form-group">
+            <label for="tenantemail" class="control-label">Email ID :</label>
+            <input type="text" class="form-control" ng-model="tenantemail">
+          </div>
 
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateTData()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
-    </div>
-    </div>
 
-    <script>
-        var app = angular.module('myApp', []);
-        app.controller('customersCtrl', function ($scope, $http, DataService) {
+    </div>
+      <script>
+      var app = angular.module('myApp', ['ngMaterial']);
+
+    app.controller('customersCtrl', function ($scope, $http, DataService) 
+    {
 
             $scope.searched = false;
             
@@ -309,8 +400,15 @@
 
             $scope.registrationnumber = "";
             $scope.flatno="";
-            
+                        
             $scope.color =[ 'red' , 'green' ];
+            
+            $scope.showsidenav=true;
+    
+            $scope.altersidenav = function()
+            {
+                $scope.showsidenav = !$scope.showsidenav;
+            }
             
             $scope.editable = function()
             {
@@ -320,6 +418,14 @@
             {
                 $scope.editorEnable1=true;
             }
+                    
+                var start = 2010;
+                var end = new Date().getFullYear();
+                var options = "";
+                for(var year = start ; year <=end; year++){
+                    options += "<option>"+ year +"</option>";
+            }
+            document.getElementById("year").innerHTML = options;
             
             $scope.updateOData = function()
             {
@@ -360,13 +466,8 @@
                 $http.put('/tenant/'+ $scope.tenantdbid,request);
             }
             
-            
-            
-            $scope.getFlatDetails = function (inputsearch) 
+            $scope.resetLabels = function()
             {
-                
-                if(inputsearch === "")
-                {
                     $scope.registrationnumber="";
                     $scope.flatno="";
                     
@@ -386,6 +487,18 @@
                     $scope.tenantlastname="";
                     $scope.tenantmiddlename="";
                     $scope.tenantmobile="";
+                
+                    $scope.editorEnable1=false;
+                    $scope.editorEnable=false;
+
+            }
+
+            
+            $scope.getFlatDetails = function (inputsearch) 
+            {
+                $scope.resetLabels();
+                if(inputsearch == "")
+                {
                 }
                 else
                 {
@@ -416,6 +529,7 @@
                                 }
 
                             }
+                            
                         }
                     }
                     
@@ -435,24 +549,29 @@
 
                 }
             }
-         
-            $scope.getDetails = function() {
+                     
+            $scope.getDetails = function() 
+            {
 
-                DataService.getOwnersData().then(
-                    $scope.getOwnersDataSuccessHandler
+                DataService.getAllData().then(
+                    $scope.getAllDataSuccessHandler
                 );
                 
 
             }
 
             
-            $scope.getOwnersDataSuccessHandler = function(response)
+            $scope.getAllDataSuccessHandler = function(response)
             {
                 console.log(response);
-                $scope.owners = response.data.docs;
-                console.log($scope.owners);
+                $scope.tenants = response.data.docs1;
+                $scope.owners = response.data.docs2;
+                $scope.flats = response.data.docs3;
+                $scope.myjson = $scope.tenants;
+                
                 $scope.getOwnerDetails();
                 $scope.getRandomSpan();
+                $scope.firstFunction();
             }
             
             $scope.getOwnerDetails = function()
@@ -469,13 +588,11 @@
                 i = particularOwner;
 
                 $scope.ownerId = $scope.owners[particularOwner].OWNER_ID; 
-                $scope.owners[particularOwner].ownedFlats = []; 
-                
                 for(var i =0; i< $scope.flat.length; i++)
                 {
                     if($scope.flat[i].OWNERS == $scope.ownerId)
                     {
-                        $scope.owners[particularOwner].ownedFlats.push($scope.flat[i].FLAT_NO);
+                        $scope.owners[particularOwner].ownedFlats=$scope.flat[i].FLAT_NO;
                     }
                 }
                 
@@ -488,18 +605,42 @@
                     $scope.owners[i].dues=Math.floor(Math.random()*2);
                     $scope.tenants[i].dues=Math.floor(Math.random()*2);
                 }
-            };
+            }
 
+            $scope.firstFunction = function()
+            {
+                for(var i=0; i<$scope.tenants.length ;i++)
+                {
+                    if($scope.tenants[i].FIRST_NAME === "" && $scope.tenants[i].MIDDLE_NAME === "" && $scope.tenants[i].LAST_NAME === "" )
+                    {
+                        for(var j=0; j<$scope.owners.length ; j++)
+                        {
+                            if($scope.owners[j].ownedFlats === $scope.tenants[i].FLAT_NO)
+                            {
+                                $scope.myjson[i].FIRST_NAME = $scope.owners[j].FIRST_NAME;
+                                $scope.myjson[i].LAST_NAME = $scope.owners[j].LAST_NAME;
+                                $scope.myjson[i].MIDDLE_NAME = $scope.owners[j].MIDDLE_NAME;
+                                $scope.myjson[i].EMAIL_IDS = $scope.owners[j].EMAIL_IDS;
+                                $scope.myjson[i].PHONE_NUMBERS = $scope.owners[j].PHONE_NUMBERS;
+                                console.log($scope.myjson[i]);
+                                
+                            }
+                        }
+                        
+                    }
+                    
+                }
+            }
 
                             
-            $http.get("/flatDetails")
+/*            $http.get("/flatDetails")
             .success(function (response) { $scope.flat = response.docs; });
 
 
             $http.get("/tenantDetails")
-            .success(function (response) { $scope.tenants = response.docs; });
+            .success(function (response) { $scope.tenants = response.docs;  $scope.myjson = $scope.tenants;});
 
-            
+  */          
 
         });
 
@@ -509,39 +650,18 @@
             var _getDataService = 
             {
                 
-                getOwnersData : function()
+                getAllData : function()
                 {
-            	   return $http.get('/ownerDetails');
-                },
-                getFlatsData : function()
-                {
-                    return $http.get('/flatDetails');
-                },
-                getTenantsData : function()
-                {
-                    return $http.get('/tenantDetails');
-                },
-            
+            	   return $http.get('/flatDetails');
+                },            
             }
             
             return _getDataService;
         });
 
+
+
     </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</body>
+  </body>
 </html>
