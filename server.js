@@ -218,16 +218,18 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
 	var d = new Date();
 	var currMonth = d.getMonth();    
     var dueStatus = new Array();
-
-    receipts.find({
+    var dbResult = receipts.find({
                 flatNumber : req.params.flatNumber, 
                 year : req.params.year,
                 paymentTyp : "Maitenance"} ,
                   {
                 months: 1,
                 _id: 0
-            })
-            .toArray(function(err,results){
+            });
+			
+	console.log(dbResult);
+	/*
+    dbResult.toArray(function(err,results){
             console.log(results)
             // 1 for green, 0 for red, 2 for gray.
             for(var i=0; i < results.length; i++)
@@ -244,6 +246,8 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
             }
         res.json({ dueStatus: dueStatus }); 
 });
+			*/
+			res.json({ dueStatus: dueStatus }); 
 });
 
 app.get('/flatDetails', function (req, res) {

@@ -191,6 +191,7 @@
         </div>
         <br><br>
         <button ng-href="" ng-click="createReceipts()">Submit</button>
+		<div class="alert alert-success" role="alert" ng-show="postSuccess">Updated Successfully!!</div>
 
     </div>
 
@@ -209,6 +210,7 @@
             $scope.dateEditorEnabled = false;
             $scope.paymentMode;
             $scope.paymentTyp;
+			$scope.postSuccess = false;
             $scope.remarks = "Default Remarks";
             $scope.remarksEditorEnabled = false;
             $scope.received = "Received by";
@@ -238,11 +240,12 @@
         $http.post('/', data)
             .success(function(data) {
                 $scope.receipts = data;
+				$scope.postSuccess = true;
+				
             })
             .error(function(data) {
                 console.log('Error: ' + data);
             });
-                window.log('Submitted')
         };
             
             $scope.update = function(x) {
