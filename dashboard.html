@@ -116,22 +116,15 @@ body,td,th {
 
               <form class="navbar-form navbar-left" role="search">
             <div class="form-group" >
-                <input type="text" class="form-control" ng-model="flatNumberEntered" placeholder="Search" size="150" maxlength="200" width="50 cm" />
+                <input type="text" class="form-control" ng-model="flatNumberEntered" placeholder="Search" size="150" maxlength="200" width="50" />
                 
                                          
                 <md-button class="md-icon-button md-primary md-hue-3" aria-label="Settings" ng-click="getFlatDetails(flatNumberEntered )">
                 <span class="glyphicon glyphicon-search"></span>
                 <md-tooltip> Search</md-tooltip>
                 </md-button>
-        </div>
-                  
-
-            
-
+        </div>    
         </form>
-
-      
-    
       
     <!-- Angular Material Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
@@ -143,20 +136,17 @@ body,td,th {
         <div class="container" ng-hide="searched" ng-init="getDetails()" > 
             <h2>
                 <br/>
+                <br/>
             
                   <md-button class="md-fab md-icon-button md-primary md-hue-3" ng-click="altersidenav()">
                       <span class="glyphicon glyphicon-filter"></span>
                         <md-tooltip> Filters</md-tooltip>
                   </md-button>
-                  
-                
-
 
             Flat Details</h2>
                   
                   <md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2" md-is-open="!showsidenav" ng-cloak>
-                      
-                    
+                  
                 <h3 > Filters</h3>  
                       <hr/>
                       <br/><br/> 
@@ -221,7 +211,7 @@ body,td,th {
 	<h3>OWNER DETAILS        
         <div class="pull-right btn-group btn-group-xs">
 
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#ownerModal" data-whatever="@mdo">
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#ownerModal" data-whatever="@mdo">
         <span class="glyphicon glyphicon-pencil"></span>
         <md-tooltip> Edit</md-tooltip>
         </button>
@@ -255,7 +245,6 @@ E-Mail Id : {{tenantemail}}
 Occupation : 
 	</p>
 	<h3>MONTHLY STATUS</h3>
-    
 	<p>
         JAN FEB MAR APR MAY JUN JUL  AUG SEP OCT NOV DEC
     <br/>
@@ -418,7 +407,7 @@ Occupation :
             {
                 $scope.editorEnable1=true;
             }
-                    
+            
                 var start = 2010;
                 var end = new Date().getFullYear();
                 var options = "";
@@ -426,7 +415,7 @@ Occupation :
                     options += "<option>"+ year +"</option>";
             }
             document.getElementById("year").innerHTML = options;
-            
+                        
             $scope.updateOData = function()
             {
             $scope.editorEnable=false;
@@ -550,25 +539,21 @@ Occupation :
                 }
             }
                      
-            $scope.getDetails = function() 
-            {
+            $scope.getDetails = function() {
 
-                DataService.getAllData().then(
-                    $scope.getAllDataSuccessHandler
+                DataService.getOwnersData().then(
+                    $scope.getOwnersDataSuccessHandler
                 );
                 
 
             }
 
             
-            $scope.getAllDataSuccessHandler = function(response)
+            $scope.getOwnersDataSuccessHandler = function(response)
             {
                 console.log(response);
-                $scope.tenants = response.data.docs1;
-                $scope.owners = response.data.docs2;
-                $scope.flats = response.data.docs3;
-                $scope.myjson = $scope.tenants;
-                
+                $scope.owners = response.data.docs;
+                console.log($scope.owners);
                 $scope.getOwnerDetails();
                 $scope.getRandomSpan();
                 $scope.firstFunction();
@@ -633,14 +618,14 @@ Occupation :
             }
 
                             
-/*            $http.get("/flatDetails")
+            $http.get("/flatDetails")
             .success(function (response) { $scope.flat = response.docs; });
 
 
             $http.get("/tenantDetails")
-            .success(function (response) { $scope.tenants = response.docs;  $scope.myjson = $scope.tenants;});
+            .success(function (response) { $scope.tenants = response.docs;  $scope.myjson = response.docs;});
 
-  */          
+            
 
         });
 
@@ -650,10 +635,19 @@ Occupation :
             var _getDataService = 
             {
                 
-                getAllData : function()
+                getOwnersData : function()
                 {
-            	   return $http.get('/flatDetails');
-                },            
+            	   return $http.get('/ownerDetails');
+                },
+                getFlatsData : function()
+                {
+                    return $http.get('/flatDetails');
+                },
+                getTenantsData : function()
+                {
+                    return $http.get('/tenantDetails');
+                },
+            
             }
             
             return _getDataService;
