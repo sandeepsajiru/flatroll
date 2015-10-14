@@ -47,7 +47,19 @@ $(document).ready(function(){
 
 
 
-          
+<style type="text/css">
+
+.red {
+    color: red;
+}
+.green {
+    color: green;
+}
+.grey {
+    color: grey;
+}
+      
+</style>         
 
 <style type="text/css">
 body {
@@ -150,48 +162,48 @@ body,td,th {
                 <h3 > Filters</h3>  
                       <hr/>
                       <br/><br/> 
-            <md-checkbox ng-model="radioflatno">Flat No</md-checkbox>
+            <md-checkbox ng-model="radioflatno" ng-init="radioflatno=true">Flat No</md-checkbox>
                       
-            <md-checkbox ng-model="radioname">Occupant Name</md-checkbox>
+            <md-checkbox ng-model="radioname" ng-init="radioname=true">Occupant Name</md-checkbox>
                       
-            <md-checkbox ng-model="radiophonenumber">Phone Number</md-checkbox>
+            <md-checkbox ng-model="radiophonenumber" ng-init="radiophonenumber=true"> Phone Number</md-checkbox>
                       
-            <md-checkbox ng-model="radioemail">Email ID</md-checkbox>
+            <md-checkbox ng-model="radioemail" ng-init="radioemail=true">Email ID</md-checkbox>
                       
-            <md-checkbox ng-model="radiodues">Dues</md-checkbox>
+            <md-checkbox ng-model="radiodues" ng-init="radiodues=true">Dues</md-checkbox>
       
             <md-button class="md-raised" ng-click="altersidenav()">Close</md-button> 
                   </md-sidenav>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr>
-                        <th ng-hide="radioflatno">Flat Number</th>
-                        <th ng-hide="radioname">
+                        <th ng-show="radioflatno">Flat Number</th>
+                        <th ng-show="radioname">
             
                             <span class="glyphicon glyphicon-user"></span>
                             Occupant Name</th>
-                        <th ng-hide="radiophonenumber">
+                        <th ng-show="radiophonenumber">
                             
                             <span class="glyphicon glyphicon-earphone"></span>
                             Phone Number</th>
-                        <th ng-hide="radioemail">
+                        <th ng-show="radioemail">
                             
                             <span class="glyphicon glyphicon-envelope"></span>
                             Email Id</th>
-                        <th ng-hide="radiodues">Dues</th>
+                        <th ng-show="radiodues">Dues</th>
                     </tr>
                 </thead>
                 <tbody ng-repeat="x in myjson " ng-click="getFlatDetails(x.FLAT_NO)" >
                     <tr>
-                        <td ng-hide="radioflatno">{{x.FLAT_NO}}</td>
-                        <td ng-hide="radioname">{{x.FIRST_NAME + " "+x.MIDDLE_NAME+ " "+x.LAST_NAME}}</td>
-                        <td ng-hide="radiophonenumber">{{x.PHONE_NUMBERS}}</td>
-                        <td ng-hide="radioemail">{{x.EMAIL_IDS}}</td>
+                        <td ng-show="radioflatno">{{x.FLAT_NO}}</td>
+                        <td ng-show="radioname">{{x.FIRST_NAME + " "+x.MIDDLE_NAME+ " "+x.LAST_NAME}}</td>
+                        <td ng-show="radiophonenumber">{{x.PHONE_NUMBERS}}</td>
+                        <td ng-show="radioemail">{{x.EMAIL_IDS}}</td>
                         
                         
-                        <td  style="background-color:red" width="1px" ng-show="x.dues==1 && !radiodues"></td>
+                        <td  style="background-color:red" width="1px" ng-show="x.dues==1 && radiodues"></td>
                 
-                        <td  style="background-color:green" width="1px" ng-show="x.dues==0 && !radiodues"></td>
+                        <td  style="background-color:green" width="1px" ng-show="x.dues==0 && radiodues"></td>
                            
                     </tr>
                 
@@ -245,14 +257,17 @@ E-Mail Id : {{tenantemail}}
 Occupation : 
 	</p>
 	<h3>MONTHLY STATUS</h3>
-	<p>
-        JAN FEB MAR APR MAY JUN JUL  AUG SEP OCT NOV DEC
+	<p ng-init="duestatusfn(flatno,end)">
+    <a ng-repeat="z in obj">
+    
+      
+    <span ng-class="{red: z.status == 0, green: z.status == 1, grey: z.status ==2}"> {{ z.month }}</span>
+        
+    </a>
     <br/>
     <br/>
                 <label>Year</label>
-        <select ng-model="selectedyear" id="year"></select>
-        
-        {{selectedyear}}
+        <select ng-model="selectedyear" ng-init="year=end" id="year" ng-click="duestatusfn(flatno,selectedyear)"></select>
     
     </p>
     
@@ -392,6 +407,8 @@ Occupation :
                         
             $scope.color =[ 'red' , 'green' ];
             
+            $scope.years =[ 'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC' ];
+        
             $scope.showsidenav=true;
     
             $scope.altersidenav = function()
@@ -408,13 +425,16 @@ Occupation :
                 $scope.editorEnable1=true;
             }
             
-                var start = 2010;
-                var end = new Date().getFullYear();
-                var options = "";
-                for(var year = start ; year <=end; year++){
-                    options += "<option>"+ year +"</option>";
+            var start = 2010;
+            $scope.end = new Date().getFullYear();
+            var options = "";
+            
+            for(var year = start ; year <=$scope.end; year++)
+            {
+                options += "<option>"+ year +"</option>";
             }
-            document.getElementById("year").innerHTML = options;
+            
+            document.getElementById("year").innerHTML = options;            
                         
             $scope.updateOData = function()
             {
@@ -555,8 +575,9 @@ Occupation :
                 $scope.owners = response.data.docs;
                 console.log($scope.owners);
                 $scope.getOwnerDetails();
-                $scope.getRandomSpan();
                 $scope.firstFunction();
+                $scope.getRandomSpan();
+
             }
             
             $scope.getOwnerDetails = function()
@@ -583,14 +604,47 @@ Occupation :
                 
             }
             
+            $scope.duestatusfn = function(dueflatnumber,selectedyear)
+            {
+                $http.get("/monthlyStatus/", {
+                    params: { flatNumber: dueflatnumber,year:selectedyear }    
+                }).success(function (response) { $scope.duesoftheyear = response.duestatus; });
+                
+                $scope.formarray();
+            }
+            
+            $scope.months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];        
+        
+            $scope.formarray = function()
+            {
+                for(var a=0;a<$scope.duesoftheyear;a++)
+                {
+                    $scope.obj[a].status = $scope.duesoftheyear[a];
+                    $scope.obj[a].month = $scope.months[a];
+                }
+            }
+
+
             $scope.getRandomSpan =function()
             {
                 for(var i=0;i<$scope.owners.length;i++)
                 {
                     $scope.owners[i].dues=Math.floor(Math.random()*2);
-                    $scope.tenants[i].dues=Math.floor(Math.random()*2);
+                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
+                    if($scope.duesoftheyear[i]=== 0)
+                    {
+                        $scope.tenants[i].dues=1;
+                        break;
+                    }
+                    else if($scope.duesoftheyear[i] ===1 || $scope.duesoftheyear[i] ===2)
+                    {
+                        $scope.tenants[i].dues= 0;
+                    }
+                    
                 }
+            
             }
+            
 
             $scope.firstFunction = function()
             {
