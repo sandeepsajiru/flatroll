@@ -256,6 +256,22 @@ E-Mail Id : {{tenantemail}}
         <br /><br />
 Occupation : 
 	</p>
+    
+    <h3>FLAT DETAILS    </h3>
+	<p> Registration Number : {{registrationnumber}}
+        <br/><br/>
+        Property Tax Number : {{propertytax}}
+        <br/><br />
+        Electricity Service Number : {{electricityservicenumber}}
+        <br/><br/>
+        Sales Deed Date : {{salesdeed}}
+        <br/><br/>
+        Block Number : {{blocknumber}}
+        <br/><br/>
+        Car parking slots : {{carparkingslots}}
+        <br/><br/>
+	</p>
+
 	<h3>MONTHLY STATUS</h3>
 	<p ng-init="duestatusfn(flatno,end)">
     <a ng-repeat="z in obj">
@@ -269,13 +285,7 @@ Occupation :
                 <label>Year</label>
         <select ng-model="selectedyear" ng-init="year=end" id="year" ng-click="duestatusfn(flatno,selectedyear)"></select>
     
-    </p>
-    
-        <h3>FLAT DETAILS    </h3>
-	<p>Registration Number : {{registrationnumber}}
-      <br /><br />
-	</p>
-
+    </p>    
 
 </div>
 </div>
@@ -404,6 +414,12 @@ Occupation :
 
             $scope.registrationnumber = "";
             $scope.flatno="";
+            $scope.salesdeed ="";
+            $scope.propertytax ="";
+            $scope.electricityservicenumber ="";
+            $scope.carparkingslots ="";
+            $scope.blocknumber ="";
+            
                         
             $scope.color =[ 'red' , 'green' ];
             
@@ -479,6 +495,12 @@ Occupation :
             {
                     $scope.registrationnumber="";
                     $scope.flatno="";
+                    $scope.salesdeed ="";
+                    $scope.propertytax ="";
+                    $scope.electricityservicenumber ="";
+                    $scope.carparkingslots ="";
+                    $scope.blocknumber ="";
+
                     
                     $scope.ownerid="";
                     $scope.ownerfirstname="";
@@ -505,6 +527,8 @@ Occupation :
             
             $scope.getFlatDetails = function (inputsearch) 
             {
+                inputsearch = angular.uppercase(inputsearch);
+        
                 $scope.resetLabels();
                 if(inputsearch == "")
                 {
@@ -519,6 +543,11 @@ Occupation :
                         {
                             console.log($scope.flat[i].FLAT_NO);
                             $scope.registrationnumber = $scope.flat[i].REGISTRATION_NUMBER;
+                            $scope.salesdeed = $scope.flat[i].SALE_DEED_DATE;
+                            $scope.propertytax = $scope.flat[i].PROPERTY_TAX_NUMBER;
+                            $scope.electricityservicenumber = $scope.flat[i].ELECTRICITY_SERVICE_NUMBER;
+                            $scope.carparkingslots = $scope.flat[i].CAR_PARKING_SLOTS;
+                            $scope.blocknumber = $scope.flat[i].BLOCK_NUMBER;
                             $scope.ownerid = $scope.flat[i].OWNERS;
                             $scope.flatdbid =$scope.flat[i]._id;
                             $scope.flatno = $scope.flat[i].FLAT_NO;
