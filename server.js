@@ -64,22 +64,16 @@ var flatSchema = new Schema(
 
 var receiptsSchema = new Schema(
 {
-    paymentItems:'string',
-    paymentTypes:'string',
-    id:'string',
-    idEditorEnabled: 'string',
+    flatNo:'string',
     receiptId: 'string',
-    receiptIdEditorEnabled: 'string',
     amount: 'string',
-    amountEditorEnabled: 'string',
     date: 'string',
-    dateEditorEnabled: 'string',
     paymentMode: 'string',
     paymentTyp: 'string',
     remarks: 'string',
-    remarksEditorEnabled: 'string',
     received: 'string',
-    receivedEditorEnabled: 'string'    
+    year: 'string',
+    months: ['string']    
 });
 // Mongoose Model definition
 
@@ -188,22 +182,16 @@ app.put('/tenant/:id',(function(req,res){
 app.post('/',function(req, res){
 
 		var Receipt = new receipts({
-        paymentItems : req.body.paymentItems,
-        paymentTypes : req.body.paymentTypes,
-        id : req.body.id,
-        idEditorEnabled  : req.body.idEditorEnabled ,
+        flatNo : req.body.flatNo,
         receiptId : req.body.receiptId ,
-        receiptIdEditorEnabled : req.body.receiptIdEditorEnabled ,
         amount : req.body.amount ,
-        amountEditorEnabled : req.body.amountEditorEnabled ,
         date : req.body.date ,
-        dateEditorEnabled : req.body.dateEditorEnabled ,
         paymentMode: req.body.paymentMode,
         paymentTyp: req.body.paymentTyp,
         remarks: req.body.remarks ,
-        remarksEditorEnabled: req.body.remarksEditorEnabled ,
         received: req.body.received ,
-        receivedEditorEnabled: req.body.receivedEditorEnabled
+	year: req.body.year ,
+	months: req.body.months
         });
 		Receipt.save(function(err, Receipt) {
 			if (err){
@@ -214,8 +202,18 @@ app.post('/',function(req, res){
         console.log(Receipt)
 	});
 
-jsonConcat = require("json-concat");    
+app.get('/tenantDetails', function (req, res) {
+    tenants.find({}, function (err, docs) {
+        res.json({ docs: docs });
+    });
+});
 
+app.get('/ownerDetails', function (req, res) {
+    owners.find({}, function (err, docs) {
+        res.json({ docs: docs });
+    });
+});
+/*    
 var d = new Date();
 
 var currMonth = d.getMonth();    
@@ -249,18 +247,13 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
         res.json({ dueStatus: dueStatus }); 
 });
 
-});
-    
+});*/
+
 app.get('/flatDetails', function (req, res) {
-    tenants.find({}, function (err, docs1) {
+    console.log('Got Get Call');
+    flats.find({}, function (err, docs) {
+        res.json({ docs: docs });
     });
-    owners.find({}, function (err, docs2) {
-    });
-    flats.find({}, function (err, docs3) {
-    });
-    var docs = jsonConcat("docs1.json", "docs2.json", "docs3.json");
-    console.log(docs);  
-    res.json({ docs: docs });
 });
 
 app.get('/receiptDetails', function (req, res) {
@@ -268,6 +261,15 @@ app.get('/receiptDetails', function (req, res) {
     receipts.find({}, function (err, docs) {
         res.json({ docs: docs });
     });
+});
+
+
+app.get('/tenants', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
+});
+
+app.get('/owners', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
 });
 
 app.get('/flats', function (req, res) {

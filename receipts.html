@@ -108,11 +108,11 @@
             </div>
         </nav>
 
-        <div ng-hide="idEditorEnabled">ID: {{id}}
-            <a href="" ng-click="enableEditor(1)">Change Id</a>
+        <div ng-hide="idEditorEnabled">Flat Number: {{flatNo}}
+            <a href="" ng-click="enableEditor(1)">Enter Flat Number</a>
         </div>
-        <div ng-show="idEditorEnabled">
-            <input ng-model="editableId" ng-show="idEditorEnabled">
+        <div ng-show="flatEditorEnabled">
+            <input ng-model="editableFlatNo" ng-show="flatEditorEnabled">
             <a href="" ng-click="save(1)">Save</a>
             or
             <a href="" ng-click="disableEditor(1)">cancel</a>
@@ -171,7 +171,25 @@
             or
             <a href="" ng-click="disableEditor(6)">cancel</a>
         </div><br>
-        
+        Paid for Month/Months: 
+        <label ng-repeat="month in months">
+      <input
+        type="checkbox"
+        value="{{month}}"
+        ng-checked="selection.indexOf(month) > -1"
+        ng-click="toggleSelection(month)">
+       {{month}} 
+         </label>
+        <div ng-hide="yearEditorEnabled">Payment for the year: {{year}}
+            <a href="" ng-click="enableEditor(7)">Change year</a>
+        </div>
+        <div ng-show="yearEditorEnabled">
+            <input ng-model="editableYear" ng-show="yearEditorEnabled">
+            <a href="" ng-click="save(7)">Save</a>
+            or
+            <a href="" ng-click="disableEditor(7)">cancel</a>
+        </div>
+        <br><br>
         <button ng-href="" ng-click="createReceipts()">Submit</button>
 
     </div>
@@ -181,8 +199,8 @@
         app.controller('myCtrl', function ($scope,$http) {
             $scope.paymentItems = [ {id: 1, name: 'Cash'}, {id: 2, name: 'Cheque'}, {id: 3, name: 'Card'}];
             $scope.paymentTypes = [ {id: 1, name: 'Water Charges'}, {id: 2, name: 'Open Car Parking'}, {id: 3, name: 'Misc Vendors'}, {id: 4, name: 'Cable Operators'}, {id: 5, name: 'Internet Operators'}, {id: 6, name: 'Community Hall Booking'}, {id: 7, name: 'Maintenance'}, {id: 8, name: 'Birthday Event'}, {id: 9, name: 'Commercial Event'}];
-            $scope.id = "Default Id";
-            $scope.idEditorEnabled = false;
+            $scope.flatNo = "";
+            $scope.flatEditorEnabled = false;
             $scope.receiptId = "Default Receipt Id";
             $scope.receiptIdEditorEnabled = false;
             $scope.amount = "Default Amount";
@@ -195,19 +213,27 @@
             $scope.remarksEditorEnabled = false;
             $scope.received = "Received by";
             $scope.receivedEditorEnabled = false;
+            var getYear = new Date().getFullYear();
+            $scope.year = getYear;
+            $scope.yearEditorEnabled = false;
             $scope.createReceipts;
+            $scope.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            $scope.selection = [];
+            
             
             $scope.createReceipts = function() {
             
             var data = {
-            id:$scope.id,
+            flatNo:$scope.flatNo,
             receiptId:$scope.receiptId ,
             amount:$scope.amount ,
             date:$scope.date ,
             paymentMode:$scope.paymentMode,
             paymentTyp:$scope.paymentTyp,
             remarks:$scope.remarks ,
-            received:$scope.received
+            received:$scope.received ,
+            year:$scope.year ,
+            months:$scope.selection
         };
         $http.post('/', data)
             .success(function(data) {
@@ -233,13 +259,13 @@
             $scope.enableEditor = function (x) {
                 if(x==1)
                 {
-                $scope.idEditorEnabled = true;
-                $scope.editableId = $scope.id;
+                $scope.flatEditorEnabled = true;
+                $scope.editableFlatNo = $scope.flatNo;
                 }
                 if(x==2)
                 {
                 $scope.receiptIdEditorEnabled = true;
-                $scope.editableId = $scope.receiptId;
+                $scope.editableReceiptId = $scope.receiptId;
                 }
                 if(x==3)
                 {
@@ -261,11 +287,16 @@
                 $scope.receivedEditorEnabled = true;
                 $scope.editableReceived = $scope.received;
                 }
+                if(x==7)
+                {
+                $scope.yearEditorEnabled = true;
+                $scope.editableYear = $scope.year;
+                }
             };
             $scope.disableEditor = function (x) {
                 if(x==1)
                 {
-                $scope.idEditorEnabled = false;
+                $scope.flatEditorEnabled = false;
                 }
                 if(x==2)
                 {
@@ -287,12 +318,16 @@
                 {
                 $scope.receivedEditorEnabled = false;
                 }
+                if(x==7)
+                {
+                $scope.yearEditorEnabled = false;
+                }
             };
 
             $scope.save = function (x) {
                 if(x==1)
                 {
-                $scope.id = $scope.editableId;
+                $scope.flatNo = $scope.editableFlatNo;
                 $scope.disableEditor(x);
                 }
                 if(x==2)
@@ -320,7 +355,26 @@
                 $scope.received = $scope.editableReceived;
                 $scope.disableEditor(x);
                 }
+                if(x==7)
+                {
+                $scope.year = $scope.editableYear;
+                $scope.disableEditor(x);
+                }
             };
+            
+          $scope.toggleSelection = function toggleSelection(month) {
+            var idx = $scope.selection.indexOf(month);
+
+            // is currently selected
+            if (idx > -1) {
+              $scope.selection.splice(idx, 1);
+            }
+
+            // is newly selected
+            else {
+              $scope.selection.push(month);
+            }
+          };
         });
         
     </script>
