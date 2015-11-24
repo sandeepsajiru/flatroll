@@ -192,7 +192,7 @@ body,td,th {
                         <th ng-show="radiodues">Dues</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="x in myjson " ng-click="getFlatDetails(x.FLAT_NO)" >
+                <tbody ng-repeat="x in myjson | orderBy:'FLAT_NO' " ng-click="getFlatDetails(x.FLAT_NO)" >
                     <tr>
                         <td ng-show="radioflatno">{{x.FLAT_NO}}</td>
                         <td ng-show="radioname">{{x.FIRST_NAME + " "+x.MIDDLE_NAME+ " "+x.LAST_NAME}}</td>
@@ -614,7 +614,7 @@ Occupation :
                 for(var i=0;i<$scope.owners.length;i++)
                 {
                     $scope.owners[i].dues=Math.floor(Math.random()*2);
-                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
+/*                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
                     if($scope.duesoftheyear[i]=== 0)
                     {
                         $scope.tenants[i].dues=1;
@@ -624,7 +624,7 @@ Occupation :
                     {
                         $scope.tenants[i].dues= 0;
                     }
-                    
+  */                  
                 }
             }
 
