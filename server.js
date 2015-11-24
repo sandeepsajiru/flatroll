@@ -215,7 +215,7 @@ app.post('/',function(req, res){
         console.log(Receipt)
 	});    
 
-app.post('/postMailTemplate', functoin    
+//app.post('/postMailTemplate', functoin    
 
 app.get('/tenantDetails', function (req, res) {
     tenants.find({}, function (err, docs) {
