@@ -215,7 +215,6 @@ app.get('/ownerDetails', function (req, res) {
 });
 /*    
 var d = new Date();
-
 var currMonth = d.getMonth();    
     
 var dueStatus = new Array();
@@ -246,23 +245,24 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
             }
         res.json({ dueStatus: dueStatus }); 
 });
-
 });*/
+
+var sortBy = require('sort-by');
+//For sorting flat numbers.
 
 app.get('/flatDetails', function (req, res) {
     console.log('Got Get Call');
     flats.find({}, function (err, docs) {
-        res.json({ docs: docs });
+        res.json({  docs: docs.sort(sortBy('FLAT_NO')) });
     });
 });
 
 app.get('/receiptDetails', function (req, res) {
     console.log('Got Get Call');
     receipts.find({}, function (err, docs) {
-        res.json({ docs: docs });
+        res.json({ docs : docs });
     });
 });
-
 
 app.get('/tenants', function (req, res) {
     res.sendFile(__dirname + '/dashboard.html');
