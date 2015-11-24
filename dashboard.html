@@ -3,17 +3,14 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
     <meta name="viewport" content="initial-scale=1" />
-          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Detail Page</title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    
     <script type="text/javascript" src="jquery.js"></script>
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -44,8 +41,6 @@ $(document).ready(function(){
 
 });
 </script>
-
-
 
 <style type="text/css">
 
@@ -116,7 +111,9 @@ body,td,th {
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
                         <li class="active" ng-click="searched = false;flatNumberEntered='' "><a href="">Dashboard</a></li>
-                        <li class="active"><a href="/receipts">Receipts</a></li>
+                        <li class="inactive"><a href="/receipts">Receipts</a></li>
+                        <li class="inactive"><a href="/maintenance">Maintenence</a></li>
+                        <!--<li class="inactive"><a href="/email">Emails</a></li>-->
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -129,7 +126,6 @@ body,td,th {
               <form class="navbar-form navbar-left" role="search">
             <div class="form-group" >
                 <input type="text" class="form-control" ng-model="flatNumberEntered" placeholder="Search" size="150" maxlength="200" width="50" />
-                
                                          
                 <md-button class="md-icon-button md-primary md-hue-3" aria-label="Settings" ng-click="getFlatDetails(flatNumberEntered )">
                 <span class="glyphicon glyphicon-search"></span>
@@ -142,36 +138,43 @@ body,td,th {
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
       
         <div class="container" ng-hide="searched" ng-init="getDetails()" > 
             <h2>
                 <br/>
                 <br/>
-            
+            <div class="form-group">
+                          <div class="row">
+                              <div class="col-sm-11 col-md-11">          
                   <md-button class="md-fab md-icon-button md-primary md-hue-3" ng-click="altersidenav()">
                       <span class="glyphicon glyphicon-filter"></span>
                         <md-tooltip> Filters</md-tooltip>
                   </md-button>
 
-            Flat Details</h2>
-                  
+            Flat Details
+                </div>
+        <!--                     <div class="col-sm-1 col-md-1">                  
+                  <md-button class="md-warn md-raised md-fab" aria-label="Eat cake" ng-click="sendmails()">
+                      <span class="glyphicon glyphicon-send"></span>
+                        <md-tooltip> Mails</md-tooltip>
+                  </md-button>                                 
+                                </div>
+-->
+                </div>
+                </div>
+            </h2>
+
                   <md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2" md-is-open="!showsidenav" ng-cloak>
                   
                 <h3 > Filters</h3>  
                       <hr/>
                       <br/><br/> 
             <md-checkbox ng-model="radioflatno" ng-init="radioflatno=true">Flat No</md-checkbox>
-                      
             <md-checkbox ng-model="radioname" ng-init="radioname=true">Occupant Name</md-checkbox>
-                      
             <md-checkbox ng-model="radiophonenumber" ng-init="radiophonenumber=true"> Phone Number</md-checkbox>
-                      
             <md-checkbox ng-model="radioemail" ng-init="radioemail=true">Email ID</md-checkbox>
-                      
             <md-checkbox ng-model="radiodues" ng-init="radiodues=true">Dues</md-checkbox>
-      
             <md-button class="md-raised" ng-click="altersidenav()">Close</md-button> 
                   </md-sidenav>
             <table class="table table-hover" style="width:100%">
@@ -179,36 +182,27 @@ body,td,th {
                     <tr>
                         <th ng-show="radioflatno">Flat Number</th>
                         <th ng-show="radioname">
-            
                             <span class="glyphicon glyphicon-user"></span>
                             Occupant Name</th>
                         <th ng-show="radiophonenumber">
-                            
                             <span class="glyphicon glyphicon-earphone"></span>
                             Phone Number</th>
                         <th ng-show="radioemail">
-                            
                             <span class="glyphicon glyphicon-envelope"></span>
                             Email Id</th>
                         <th ng-show="radiodues">Dues</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="x in myjson " ng-click="getFlatDetails(x.FLAT_NO)" >
+                <tbody ng-repeat="x in myjson | orderBy:'FLAT_NO' " ng-click="getFlatDetails(x.FLAT_NO)" >
                     <tr>
                         <td ng-show="radioflatno">{{x.FLAT_NO}}</td>
                         <td ng-show="radioname">{{x.FIRST_NAME + " "+x.MIDDLE_NAME+ " "+x.LAST_NAME}}</td>
                         <td ng-show="radiophonenumber">{{x.PHONE_NUMBERS}}</td>
                         <td ng-show="radioemail">{{x.EMAIL_IDS}}</td>
-                        
-                        
                         <td  style="background-color:red" width="1px" ng-show="x.dues==1 && radiodues"></td>
-                
                         <td  style="background-color:green" width="1px" ng-show="x.dues==0 && radiodues"></td>
-                           
                     </tr>
-                
                 </tbody>
-
             </table>
         </div>
     
@@ -218,11 +212,9 @@ body,td,th {
         <br />
         <div class="container-fluid" >
 <div class="accordion">    
-
     
 	<h3>OWNER DETAILS        
         <div class="pull-right btn-group btn-group-xs">
-
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#ownerModal" data-whatever="@mdo">
         <span class="glyphicon glyphicon-pencil"></span>
         <md-tooltip> Edit</md-tooltip>
@@ -230,15 +222,15 @@ body,td,th {
         </div>
     
     </h3>
-	<p>Name of Owner : {{ownerfirstname + " "+ownermiddlename+" " +ownerlastname }}
+	<p>Name of Owner : {{o.FIRST_NAME + " "+o.MIDDLE_NAME +" " +o.LAST_NAME }}
         <br /><br />
-E-Mail Id : {{owneremail}}
+E-Mail Id : {{o.EMAIL_IDS}}
         <br /><br />
-  Phone / Mobile : {{ownerphone}}
+  Phone / Mobile : {{o.PHONE_NUMBERS}}
 	    <br /><br />
-Permanent Address Of Owner : {{owneraddress}}
+Permanent Address Of Owner : {{o.ADDRESS}}
         <br /><br />
- Current Address of Owner : {{ownercity}}
+ Current Address of Owner : {{o.CITY}}
         <br /><br />
 	</p>
 	<h3>TENANT DETAILS
@@ -248,37 +240,41 @@ Permanent Address Of Owner : {{owneraddress}}
         </button>
         </div>
         </h3>
-	<p>Name : {{tenantfirstname +" "+tenantmiddlename + " " + tenantlastname}}
+	<p>Name : {{t.FIRST_NAME +" "+t.MIDDLE_NAME + " " + t.LAST_NAME}}
       <br /><br />
-Phone / Mobile : {{tenantmobile}}
+Phone / Mobile : {{t.PHONE_NUMBERS}}
         <br /><br />
-E-Mail Id : {{tenantemail}}
+E-Mail Id : {{t.EMAIL_IDS}}
         <br /><br />
 Occupation : 
 	</p>
     
-    <h3>FLAT DETAILS    </h3>
-	<p> Registration Number : {{registrationnumber}}
+    <h3>FLAT DETAILS
+        <div class="pull-right btn-group btn-group-xs">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#flatModal" data-whatever="@mdo">
+        <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+        </div>
+        </h3>        
+	<p> Registration Number : {{f.REGISTRATION_NUMBER}}
         <br/><br/>
-        Property Tax Number : {{propertytax}}
+        Property Tax Number : {{f.PROPERTY_TAX_NUMBER}}
         <br/><br />
-        Electricity Service Number : {{electricityservicenumber}}
+        Electricity Service Number : {{f.ELECTRICITY_SERVICE_NUMBER}}
         <br/><br/>
-        Sales Deed Date : {{salesdeed}}
+        Sales Deed Date : {{f.SALE_DEED_DATE}}
         <br/><br/>
-        Block Number : {{blocknumber}}
+        Block Number : {{f.BLOCK_NUMBER}}
         <br/><br/>
-        Car parking slots : {{carparkingslots}}
+        Car parking slots : {{f.CAR_PARKING_SLOTS}}
         <br/><br/>
 	</p>
 
 	<h3>MONTHLY STATUS</h3>
 	<p ng-init="duestatusfn(flatno,end)">
+        {{flatno}}
     <a ng-repeat="z in obj">
-    
-      
     <span ng-class="{red: z.status == 0, green: z.status == 1, grey: z.status ==2}"> {{ z.month }}</span>
-        
     </a>
     <br/>
     <br/>
@@ -300,40 +296,40 @@ Occupation :
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="ownerfirstname" class="control-label">First Name:</label>
-            <input type="text" class="form-control" ng-model="ownerfirstname">
+            <label for="o.FIRST_NAME" class="control-label">First Name:</label>
+            <input type="text" class="form-control" ng-model="o.FIRST_NAME">
           </div>
            <div class="form-group">
-            <label for="ownermiddlename" class="control-label">Middle Name :</label>
-            <input type="text" class="form-control" ng-model="ownermiddlename">
+            <label for="o.MIDDLE_NAME" class="control-label">Middle Name :</label>
+            <input type="text" class="form-control" ng-model="o.MIDDLE_NAME">
           </div>
           <div class="form-group">
-            <label for="ownerlastname" class="control-label">Last Name :</label>
-            <input type="text" class="form-control" ng-model="ownerlastname">
+            <label for="o.LAST_NAME" class="control-label">Last Name :</label>
+            <input type="text" class="form-control" ng-model="o.LAST_NAME">
           </div>
           <div class="form-group">
-            <label for="owneremail" class="control-label">Email ID :</label>
-            <input type="text" class="form-control" ng-model="owneremail">
+            <label for="o.EMAIL_IDS" class="control-label">Email ID :</label>
+            <input type="text" class="form-control" ng-model="o.EMAIL_IDS">
           </div>
           <div class="form-group">
-            <label for="ownerphone" class="control-label">Phone Number :</label>
-            <input type="text" class="form-control" ng-model="ownerphone">
+            <label for="o.PHONE_NUMBERS" class="control-label">Phone Number :</label>
+            <input type="text" class="form-control" ng-model="o.PHONE_NUMBERS">
           </div>
 
           <div class="form-group">
-            <label for="owneraddress" class="control-label">Address :</label>
-            <textarea class="form-control" ng-model="owneraddress"></textarea>
+            <label for="o.ADDRESS" class="control-label">Address :</label>
+            <textarea class="form-control" ng-model="o.ADDRESS"></textarea>
           </div>
             
         <div class="form-group">
-            <label for="ownercity" class="control-label">City :</label>
-            <input type="text" class="form-control" ng-model="ownercity">
+            <label for="o.CITY" class="control-label">City :</label>
+            <input type="text" class="form-control" ng-model="o.CITY">
           </div>
 
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateOData()">Save Changes</button>
       </div>
     </div>
@@ -350,180 +346,170 @@ Occupation :
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="tenantfirstname" class="control-label">First Name:</label>
-            <input type="text" class="form-control" ng-model="tenantfirstname">
+            <label for="t.FIRST_NAME" class="control-label">First Name:</label>
+            <input type="text" class="form-control" ng-model="t.FIRST_NAME">
           </div>
            <div class="form-group">
-            <label for="tenantmiddlename" class="control-label">Middle Name :</label>
-            <input type="text" class="form-control" ng-model="tenantmiddlename">
+            <label for="t.MIDDLE_NAME" class="control-label">Middle Name :</label>
+            <input type="text" class="form-control" ng-model="t.MIDDLE_NAME">
           </div>
           <div class="form-group">
-            <label for="tenantlastname" class="control-label">Last Name :</label>
-            <input type="text" class="form-control" ng-model="tenantlastname">
+            <label for="t.LAST_NAME" class="control-label">Last Name :</label>
+            <input type="text" class="form-control" ng-model="t.LAST_NAME">
           </div>
           <div class="form-group">
-            <label for="tenantmobile" class="control-label">Phone Number :</label>
-            <input type="text" class="form-control" ng-model="tenantmobile">
+            <label for="t.PHONE_NUMBERS" class="control-label">Phone Number :</label>
+            <input type="text" class="form-control" ng-model="t.PHONE_NUMBERS">
           </div>
           <div class="form-group">
-            <label for="tenantemail" class="control-label">Email ID :</label>
-            <input type="text" class="form-control" ng-model="tenantemail">
+            <label for="t.EMAIL_IDS" class="control-label">Email ID :</label>
+            <input type="text" class="form-control" ng-model="t.EMAIL_IDS">
           </div>
 
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateTData()">Save Changes</button>
       </div>
     </div>
   </div>
 </div>
+        
+    <div class="modal fade" id="flatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Flat DETAILS</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="f.REGISTRATION_NUMBER" class="control-label">Registration Number:</label>
+            <input type="text" class="form-control" ng-model="f.REGISTRATION_NUMBER">
+          </div>
+           <div class="form-group">
+            <label for="f.PROPERTY_TAX_NUMBER" class="control-label">Property Tax Number :</label>
+            <input type="text" class="form-control" ng-model="f.PROPERTY_TAX_NUMBER">
+          </div>
+          <div class="form-group">
+            <label for="f.ELECTRICITY_SERVICE_NUMBER" class="control-label">Electricity Service Number :</label>
+            <input type="text" class="form-control" ng-model="f.ELECTRICITY_SERVICE_NUMBER">
+          </div>
+          <div class="form-group">
+            <label for="f.SALE_DEED_DATE" class="control-label">Sales Deed Date :</label>
+            <input type="text" class="form-control" ng-model="f.SALE_DEED_DATE">
+          </div>
+          <div class="form-group">
+            <label for="f.BLOCK_NUMBER" class="control-label">Block Number :</label>
+            <input type="text" class="form-control" ng-model="f.BLOCK_NUMBER">
+          </div>
+          <div class="form-group">
+            <label for="f.CAR_PARKING_SLOTS" class="control-label">Car Parking slots :</label>
+            <input type="text" class="form-control" ng-model="f.CAR_PARKING_SLOTS">
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateFData()">Save Changes</button>
+      </div>
     </div>
-
-
+  </div>
+</div>
+        
+    </div>
     </div>
       <script>
       var app = angular.module('myApp', ['ngMaterial']);
-
     app.controller('customersCtrl', function ($scope, $http, DataService) 
     {
-
             $scope.searched = false;
-            
             $scope.ownerdbid="";
             $scope.flatdbid="";
             $scope.tenantdbid="";
-            
             $scope.ownerid = "";
-            $scope.ownername = "";
-            $scope.ownerphone = "";
-            $scope.owneraddress = "";
-            $scope.owneremail="";
-            $scope.ownercity = "";
             $scope.flatNumberEntered;
-            $scope.enteredValue = "";
-            $scope.editorEnable=false;
-            $scope.editorEnable1=false;
-            
-            $scope.tenantfirstname="";
-            $scope.tenantmiddlename="";
-            $scope.tenantlastname="";
-            $scope.tenantemail="";
-            $scope.tenantmobile="";        
-
-            $scope.registrationnumber = "";
-            $scope.flatno="";
-            $scope.salesdeed ="";
-            $scope.propertytax ="";
-            $scope.electricityservicenumber ="";
-            $scope.carparkingslots ="";
-            $scope.blocknumber ="";
-            
-                        
+            $scope.flatno="";            
             $scope.color =[ 'red' , 'green' ];
-            
             $scope.years =[ 'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC' ];
-        
             $scope.showsidenav=true;
+            $scope.t="";
+            $scope.o="";
+            $scope.f="";
     
             $scope.altersidenav = function()
             {
                 $scope.showsidenav = !$scope.showsidenav;
             }
-            
-            $scope.editable = function()
-            {
-                $scope.editorEnable=true;
-            }
-            $scope.edit = function()
-            {
-                $scope.editorEnable1=true;
-            }
-            
+                        
             var start = 2010;
             $scope.end = new Date().getFullYear();
             var options = "";
-            
             for(var year = start ; year <=$scope.end; year++)
             {
                 options += "<option>"+ year +"</option>";
             }
-            
             document.getElementById("year").innerHTML = options;            
                         
             $scope.updateOData = function()
             {
-            $scope.editorEnable=false;
-                
             var request= {
                     OWNER_ID : $scope.ownerid,
-                    FIRST_NAME : $scope.ownerfirstname,
-                    MIDDLE_NAME :$scope.ownermiddlename,
-                    LAST_NAME : $scope.ownerlastname,
-                    ADDRESS : $scope.owneraddress,
-                    CITY : $scope.ownercity,
-                    PHONE_NUMBERS : $scope.ownerphone,
-                    EMAIL_IDS : $scope.owneremail
-    
+                    FIRST_NAME : $scope.o.FIRST_NAME,
+                    MIDDLE_NAME :$scope.o.MIDDLE_NAME,
+                    LAST_NAME : $scope.o.LAST_NAME,
+                    ADDRESS : $scope.o.ADDRESS,
+                    CITY : $scope.o.CITY,
+                    PHONE_NUMBERS : $scope.o.PHONE_NUMBERS,
+                    EMAIL_IDS : $scope.o.EMAIL_IDS
                 };
-
-                
                 $http.put('/owner/'+ $scope.ownerdbid,request);
             }
 
             $scope.updateTData = function()
             {
-            $scope.editorEnable1=false;
-                
             var request= {
                     TENANT_ID : $scope.tenantid,
                     FLAT_NO : $scope.flatno,
-                    FIRST_NAME : $scope.tenantfirstname,
-                    MIDDLE_NAME : $scope.tenantmiddlename,
-                    LAST_NAME : $scope.tenantlastname,
-                    EMAIL_IDS : $scope.tenantemail,
-                    PHONE_NUMBERS : $scope.tenantmobile
+                    FIRST_NAME : $scope.t.FIRST_NAME,
+                    MIDDLE_NAME : $scope.t.MIDDLE_NAME,
+                    LAST_NAME : $scope.t.LAST_NAME,
+                    EMAIL_IDS : $scope.t.EMAIL_IDS,
+                    PHONE_NUMBERS : $scope.t.PHONE_NUMBERS
                     
                 };
-
-                
                 $http.put('/tenant/'+ $scope.tenantdbid,request);
+            }
+            
+            $scope.updateFData = function()
+            {
+            var request= {
+                    FLAT_ID : $scope.flatdbid,        
+                    REGISTRATION_NUMBER : $scope.f.REGISTRATION_NUMBER,
+                    PROPERTY_TAX_NUMBER : $scope.f.PROPERTY_TAX_NUMBER,
+                    ELECTRICITY_SERVICE_NUMBER : $scope.f.ELECTRICITY_SERVICE_NUMBER,
+                    SALE_DEED_DATE : $scope.f.SALE_DEED_DATE,
+                    BLOCK_NUMBER : $scope.f.BLOCK_NUMBER,
+                    CAR_PARKING_SLOTS : $scope.f.CAR_PARKING_SLOTS
+                    
+                };
+                $http.put('/flat/'+ $scope.flatdbid,request);
             }
             
             $scope.resetLabels = function()
             {
-                    $scope.registrationnumber="";
+                    $scope.t="";
+                    $scope.o="";
+                    $scope.f="";
                     $scope.flatno="";
-                    $scope.salesdeed ="";
-                    $scope.propertytax ="";
-                    $scope.electricityservicenumber ="";
-                    $scope.carparkingslots ="";
-                    $scope.blocknumber ="";
-
-                    
                     $scope.ownerid="";
-                    $scope.ownerfirstname="";
-                    $scope.ownerlastname="";
-                    $scope.ownerphone="";
-                    $scope.owneraddress="";
-                    $scope.ownercity="";
-                    
                     $scope.flatdbid="";
                     $scope.ownerdbid="";
-                    $scope.tenantdbid="";
-                    
-                    $scope.tenantemail="";
-                    $scope.tenantfirstname="";
-                    $scope.tenantlastname="";
-                    $scope.tenantmiddlename="";
-                    $scope.tenantmobile="";
-                
-                    $scope.editorEnable1=false;
-                    $scope.editorEnable=false;
-
+                    $scope.tenantdbid="";                    
             }
-
             
             $scope.getFlatDetails = function (inputsearch) 
             {
@@ -541,62 +527,36 @@ Occupation :
                     {
                         if ($scope.flat[i].FLAT_NO === inputsearch) 
                         {
-                            console.log($scope.flat[i].FLAT_NO);
-                            $scope.registrationnumber = $scope.flat[i].REGISTRATION_NUMBER;
-                            $scope.salesdeed = $scope.flat[i].SALE_DEED_DATE;
-                            $scope.propertytax = $scope.flat[i].PROPERTY_TAX_NUMBER;
-                            $scope.electricityservicenumber = $scope.flat[i].ELECTRICITY_SERVICE_NUMBER;
-                            $scope.carparkingslots = $scope.flat[i].CAR_PARKING_SLOTS;
-                            $scope.blocknumber = $scope.flat[i].BLOCK_NUMBER;
+                            $scope.f = $scope.flat[i];
                             $scope.ownerid = $scope.flat[i].OWNERS;
                             $scope.flatdbid =$scope.flat[i]._id;
                             $scope.flatno = $scope.flat[i].FLAT_NO;
-                            
                             for (var j = 0; j < $scope.owners.length; j++) 
                             {
                                 if($scope.ownerid === $scope.owners[j].OWNER_ID)
                                 {
-                                    $scope.ownerfirstname = $scope.owners[j].FIRST_NAME;
-                                    $scope.ownermiddlename = $scope.owners[j].MIDDLE_NAME;
-                                    $scope.ownerlastname = $scope.owners[j].LAST_NAME;
-                                    $scope.ownerphone = $scope.owners[j].PHONE_NUMBERS;
-                                    $scope.owneremail = $scope.owners[j].EMAIL_IDS;
-                                    $scope.ownercity = $scope.owners[j].CITY;
-                                    $scope.owneraddress = $scope.owners[j].ADDRESS;
+                                    $scope.o=$scope.owners[j];
                                     $scope.ownerdbid = $scope.owners[j]._id;
                                 }
-
                             }
-                            
                         }
                     }
-                    
                     for(var k=0;k < $scope.tenants.length;k++)
                     {
                         if($scope.tenants[k].FLAT_NO === inputsearch)
                         {
-                            $scope.tenantfirstname = $scope.tenants[k].FIRST_NAME;
-                            $scope.tenantmiddlename = $scope.tenants[k].MIDDLE_NAME;
-                            $scope.tenantlastname = $scope.tenants[k].LAST_NAME;
-                            $scope.tenantemail= $scope.tenants[k].EMAIL_IDS;
-                            $scope.tenantmobile = $scope.tenants[k].PHONE_NUMBERS;
+                            $scope.t=$scope.tenants[k];
                             $scope.tenantdbid = $scope.tenants[k]._id;
                         }
-                        
                     }
-
                 }
             }
                      
             $scope.getDetails = function() {
-
                 DataService.getOwnersData().then(
                     $scope.getOwnersDataSuccessHandler
                 );
-                
-
             }
-
             
             $scope.getOwnersDataSuccessHandler = function(response)
             {
@@ -611,7 +571,6 @@ Occupation :
             
             $scope.getOwnerDetails = function()
             {
-            //     console.log($scope.owners);
                 for(var i=0;i< $scope.owners.length; i++)
                 {
                     $scope.getOwnedFlats(i); 
@@ -621,7 +580,6 @@ Occupation :
             $scope.getOwnedFlats = function(particularOwner)
             {
                 i = particularOwner;
-
                 $scope.ownerId = $scope.owners[particularOwner].OWNER_ID; 
                 for(var i =0; i< $scope.flat.length; i++)
                 {
@@ -630,13 +588,12 @@ Occupation :
                         $scope.owners[particularOwner].ownedFlats=$scope.flat[i].FLAT_NO;
                     }
                 }
-                
             }
             
             $scope.duestatusfn = function(dueflatnumber,selectedyear)
             {
                 $http.get("/monthlyStatus/", {
-                    params: { flatNumber: dueflatnumber,year:selectedyear }    
+                    params: { flatNumber:dueflatnumber,year:selectedyear }    
                 }).success(function (response) { $scope.duesoftheyear = response.duestatus; });
                 
                 $scope.formarray();
@@ -653,13 +610,12 @@ Occupation :
                 }
             }
 
-
             $scope.getRandomSpan =function()
             {
                 for(var i=0;i<$scope.owners.length;i++)
                 {
                     $scope.owners[i].dues=Math.floor(Math.random()*2);
-                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
+/*                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
                     if($scope.duesoftheyear[i]=== 0)
                     {
                         $scope.tenants[i].dues=1;
@@ -669,11 +625,9 @@ Occupation :
                     {
                         $scope.tenants[i].dues= 0;
                     }
-                    
+  */                  
                 }
-            
             }
-            
 
             $scope.firstFunction = function()
             {
@@ -689,9 +643,7 @@ Occupation :
                                 $scope.myjson[i].LAST_NAME = $scope.owners[j].LAST_NAME;
                                 $scope.myjson[i].MIDDLE_NAME = $scope.owners[j].MIDDLE_NAME;
                                 $scope.myjson[i].EMAIL_IDS = $scope.owners[j].EMAIL_IDS;
-                                $scope.myjson[i].PHONE_NUMBERS = $scope.owners[j].PHONE_NUMBERS;
-                                console.log($scope.myjson[i]);
-                                
+                                $scope.myjson[i].PHONE_NUMBERS = $scope.owners[j].PHONE_NUMBERS;                                
                             }
                         }
                         
@@ -699,19 +651,34 @@ Occupation :
                     
                 }
             }
-
+            
+            $scope.sendmails = function()
+            {
+                for(var i=0;i<$scope.tenants.length ; i++)
+                {
+                    if($scope.tenants[i].dues == 1)
+                    {
+                        $scope.mailedlist[i] = $scope.tenants[i].EMAIL_IDS;
+                    }
+                }
+                
+                $http.post('/dues', data)
+                .success(function(data) {
+                    $scope.mailedlist = data;
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+                            
+            }
                             
             $http.get("/flatDetails")
             .success(function (response) { $scope.flat = response.docs; });
 
-
             $http.get("/tenantDetails")
             .success(function (response) { $scope.tenants = response.docs;  $scope.myjson = response.docs;});
 
-            
-
         });
-
 
         app.factory("DataService",function($http,$location){
     
@@ -735,10 +702,6 @@ Occupation :
             
             return _getDataService;
         });
-
-
-
     </script>
-
   </body>
 </html>

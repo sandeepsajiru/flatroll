@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
+var nodemailer = require('nodemailer');
 
 // Mongoose import
 
@@ -75,6 +76,14 @@ var receiptsSchema = new Schema(
     year: 'string',
     months: ['string']    
 });
+
+var settingsSchema = new Schema(
+    {
+        ID:'string',
+        MaintenanceReminderMailTemplate:'string',
+        CustomFields:['string'],
+        CreatedOn:Date
+    });
 // Mongoose Model definition
 
 
@@ -86,6 +95,10 @@ var flats = mongoose.model('flat', flatSchema);
 
 var receipts = mongoose.model('receipt', receiptsSchema);
 
+var settings = mongoose.model('setting', settingsSchema);
+
+// Bootstrap express
+// Bootstrap express
 // Bootstrap express
 var app = express();
 app.use(logger('dev'));
@@ -200,7 +213,9 @@ app.post('/',function(req, res){
 			return res.json(Receipt);
 		});
         console.log(Receipt)
-	});
+	});    
+
+//app.post('/postMailTemplate', functoin    
 
 app.get('/tenantDetails', function (req, res) {
     tenants.find({}, function (err, docs) {
@@ -213,9 +228,71 @@ app.get('/ownerDetails', function (req, res) {
         res.json({ docs: docs });
     });
 });
+    
+app.get('/settings',function(req,res){
+    var m = [];
+    var id = ['a'];
+    var name = [];
+   receipts.find({year : '2015'}, function(err, docs){
+                        for(var i=0,j=0; i<docs.length;i++)
+                        {
+                            if(docs[i].year!=null)
+                            {
+                                m[j] =docs[i].flatNo;
+                                //console.log(m.length);
+                                //console.log(m[j]);
+                                j++;
+                                
+                            }
+                        }
+       console.log('Entered');
+       for(var i=0,j=0;i<m.length;i++)
+    {
+        flats.find({ FLAT_NO: m[i]}, function(err, docs){
+            id.push(docs[i].OWNERS);
+        });
+        console.log('LENGTH OF ID ARRAY: '+id.length);
+        j++;
+    }
+    for(var i=0;i<id.length;i++)
+    {
+        owners.find({ OWNER_ID: id[i]}, function(err, docs){
+            name[i] = docs[i].LAST_NAME;
+            mail[i] = docs[i].EMAIL_IDS;
+            phone[i] = docs[i].PHONE_NUMBERS;
+            console.log(name[i]);
+        });
+    }
+   });
+    
+   
+    var smtpTransport = nodemailer.createTransport("SMTP",{
+        service: "Gmail",
+        auth: {
+            user: "samplebz1@gmail.com",
+            pass: "beingzero"
+        }
+    });
+     for(var i=0;i<name.length;i++)
+    {
+    var mailOptions = {
+        from: name[i],
+        to: "johnnikhil95@gmail.com", 
+        subject: 'Test',
+        text: 'message'
+    }
+    smtpTransport.sendMail(mailOptions, function(error, response){
+        if(error){
+            console.log(error);
+        }else{
+            res.redirect('/dashboard');
+        }
+    });
+    }
+});
+
 /*    
 var d = new Date();
-
 var currMonth = d.getMonth();    
     
 var dueStatus = new Array();
@@ -246,23 +323,31 @@ app.get('/monthlyStatus/:flatNumber/:year',function(req,res){
             }
         res.json({ dueStatus: dueStatus }); 
 });
-
 });*/
 
+var sortBy = require('sort-by');
+//For sorting flat numbers.
+    
+    
 app.get('/flatDetails', function (req, res) {
     console.log('Got Get Call');
     flats.find({}, function (err, docs) {
-        res.json({ docs: docs });
+        res.json({  docs: docs.sort(sortBy('FLAT_NO')) });
     });
 });
 
+app.get('/email', function (req, res) {
+    settings.find({}, function (err, docs) {
+        res.json({  docs: docs });
+    });
+});   
+    
 app.get('/receiptDetails', function (req, res) {
     console.log('Got Get Call');
     receipts.find({}, function (err, docs) {
-        res.json({ docs: docs });
+        res.json({ docs : docs });
     });
 });
-
 
 app.get('/tenants', function (req, res) {
     res.sendFile(__dirname + '/dashboard.html');
