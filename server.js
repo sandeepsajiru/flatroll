@@ -284,4 +284,8 @@ app.get('/dashboard', function (req, res) {
     res.sendFile(__dirname + '/dashboard.html');
 });
 
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
+});
+
 });
