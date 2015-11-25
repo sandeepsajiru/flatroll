@@ -329,7 +329,7 @@ Occupation :
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(flatNumberEntered)">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateOData()">Save Changes</button>
       </div>
     </div>
@@ -365,11 +365,11 @@ Occupation :
             <label for="t.EMAIL_IDS" class="control-label">Email ID :</label>
             <input type="text" class="form-control" ng-model="t.EMAIL_IDS">
           </div>
-
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(flatNumberEntered)">Cancel</button>
+          
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateTData()">Save Changes</button>
       </div>
     </div>
@@ -413,7 +413,7 @@ Occupation :
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(flatNumberEntered)">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateFData()">Save Changes</button>
       </div>
     </div>
@@ -522,6 +522,7 @@ Occupation :
                 else
                 {
                     $scope.searched = true;
+                    $scope.flatNumberEntered=inputsearch;
                     console.log(inputsearch);
                     for (var i = 0; i < $scope.flat.length; i++) 
                     {
