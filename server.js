@@ -75,7 +75,7 @@ var receiptsSchema = new Schema(
     remarks: 'string',
     received: 'string',
     year: 'string',
-    months: 'string'    
+    months: ['string']   
 });
 
 var settingsSchema = new Schema(
@@ -328,7 +328,7 @@ app.get('/getFlats',function(req,res){
 app.get('/sendstatus/:month/:year',function(req,res){
     receipts.find({
         year : req.params.year ,
-        month : req.params.month },
+        months : {$in: [req.params.month]} },
         {
             flatNo : 1
         }
