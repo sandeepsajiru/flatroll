@@ -42,7 +42,7 @@
       </style>
   </head>
   <body  >
-      <div ng-app="myApp" ng-controller="customersCtrl">
+      <div ng-app="myApp" ng-controller="customersCtrl" ng-init="getDetails();getMonthlyDetails(mymonth,myyear)">
               <nav class="navbar navbar-inverse">
             <div class="container-fluid" >
                 <div class="navbar-header ">
@@ -79,13 +79,13 @@
               
                               <div class="row">
 <div class="col-sm-11 col-md-11">                  
-<div ng-init="selectedyear=end;month.name=years[m-1];month.id=m;sendDate(m,selectedyear)">
+<div ng-init="selectedyear=end;month.name=years[m-1];month.id=m;">
                     <label>Year</label>
         <select  ng-model="selectedyear"  id="year" ></select>
     
                 <label>Month</label>
-        <select  ng-model="selectedmonth"  ng-click="selectedmonth!=NULL && sendDate(selectedmonth,selectedyear)">
-    <option ng-repeat="option in months"  value="{{option.id}}">{{option.name}}</option>
+        <select  ng-model="selectedmonth"  ng-click="selectedmonth!=NULL && getMonthlyDetails(selectedmonth,selectedyear)">
+    <option ng-repeat="option in months"  value="{{option.name}}">{{option.name}}</option>
             
     </select>    
     
@@ -146,6 +146,7 @@ Heads <br>
       var app = angular.module('myApp', ['ngMaterial']);
     app.controller('customersCtrl', function ($scope, $http, DataService) 
     {
+            
             $scope.searched = false;
             $scope.ownerdbid="";
             $scope.flatdbid="";
@@ -169,6 +170,7 @@ Heads <br>
             var start = 2010;
             $scope.end = new Date().getFullYear();
             var e=$scope.end;
+            $scope.myyear=$scope.end;
             var options = "";
             for(var year = $scope.end ; year >=start; year--)
             {
@@ -177,20 +179,20 @@ Heads <br>
             $scope.m=new Date().getMonth()+1;
             document.getElementById("year").innerHTML = options;            
             $scope.months=[
-                    {id: '1', name: 'JAN'},
-                    {id: '2', name: 'FEB'},
-                    {id: '3', name: 'MAR'},
-                    {id: '4', name: 'APR'},
-                    {id: '5', name: 'MAY'},
-                    {id: '6', name: 'JUN'},
-                    {id: '7', name: 'JUL'},
-                    {id: '8', name: 'AUG'},
-                    {id: '9', name: 'SEP'},
-                    {id: '10', name: 'OCT'},                    
-                    {id: '11', name: 'NOV'},
-                    {id: '12', name: 'DEC'}
+                    {id: '1', name: 'January'},
+                    {id: '2', name: 'February'},
+                    {id: '3', name: 'March'},
+                    {id: '4', name: 'April'},
+                    {id: '5', name: 'May'},
+                    {id: '6', name: 'June'},
+                    {id: '7', name: 'July'},
+                    {id: '8', name: 'August'},
+                    {id: '9', name: 'September'},
+                    {id: '10', name: 'October'},                    
+                    {id: '11', name: 'November'},
+                    {id: '12', name: 'December'}
             ];        
-
+            $scope.mymonth=$scope.months[$scope.m-1].name;
             $scope.getcolor = function(x)
             {
                 if(x.status == 1)
@@ -199,39 +201,20 @@ Heads <br>
                     return 'red';
             }
 
-            $scope.duestatus = function(month,selectedyear)
-            {
-/*                var params = {
-                        month:month,
-                        year:selectedyear
-                    }
-
-                    $http({
-                        url: '/sendstatus/',
-                        method: 'GET',
-                        params: params
-                    }).success(function (response) { $scope.grid=response.flats; });
-*/
-                console.log("HIE");
-                    return $http.get("/sendstatus/"+month+"/:"+selectedyear, {
-                    
-                }).success(function (response) { $scope.grid=response.flats; });
-
-            }            
             $scope.formarray = function(month,selectedyear)
             {
-                $scope.duestatus(month,selectedyear);
                 console.log("HELO");
-                for(var i=0; $scope.flatnos && i< $scope.flatnos.length ; i++)
+                for(var i=0;  i< $scope.flatnos.length ; i++)
                 {
                     $scope.flatnos[i].status=0;
-                    
-                    for(j=0;$scope.grid && j<$scope.grid.length;j++)
+                    console.log("HMM");
+                    console.log($scope.grid.length);
+                    for(j=0;j< $scope.grid.length;j++)
                     {
-                        
-                        if($scope.flatnos[i].FLAT_NO === $scope.grid[j].FLAT_NO)
+                        console.log("ololol");
+                        if($scope.flatnos[i].FLAT_NO === $scope.grid[j].flatNo)
                         {
-                            console.log("haha");
+                            
                             console.log($scope.flatnos[i].FLAT_NO);
                             $scope.flatnos[i].status=1;
                             break;
@@ -239,19 +222,23 @@ Heads <br>
                     }
                 }
             }
-
+            $scope.z="0";
             $scope.sendDate = function(month,selectedyear)
             {
                 console.log(month);
                 console.log(selectedyear);
-                $http.get("/getFlats").success(function (response) { $scope.flatnos=response.flats; });
-                $scope.formarray(month,selectedyear);
+                if($scope.z!="0")
+                {
+                    $scope.formarray(month,selectedyear);
+                    console.log("bye");
+                }
+                
+                console.log($scope.z);
             }
+  
             $scope.mails = function(flatno)
             {
-                return $http.get("/sendMail/", {
-                        params: { FLAT_NO:flatno }    
-                            }).success(function (response) { $scope.j=$scope.docs;});
+                return $http.get("/sendMail/"+flatno).success(function (response) { $scope.j=$scope.docs;});
             }            
             $scope.sendmails = function()
             {
@@ -260,7 +247,7 @@ Heads <br>
                 {
                     if($scope.flatnos[i].status === 0)
                     {
-                            $scope.mails(flatnos[i].FLAT_NO);
+                            $scope.mails($scope.flatnos[i].FLAT_NO);
                     }
                 }
             }
@@ -307,20 +294,35 @@ Heads <br>
             }
                      
             $scope.getDetails = function() {
-                DataService.getOwnersData().then(
-                    $scope.getOwnersDataSuccessHandler
+                console.log("adi");
+                DataService.getAllFlatsData().then(
+                    $scope.getAllFlatsDataSuccessHandler
                 );
             }
+            $scope.getMonthlyDetails= function (month,year)
+            {
+                $scope.mymonth=month;
+                $scope.myyear = year;
+                DataService.getAllMonthsData(month,year).then(
+                    $scope.getAllMonthsDataSuccessHandler
+                );        
+            }
             
-            $scope.getOwnersDataSuccessHandler = function(response)
+            $scope.getAllMonthsDataSuccessHandler = function(response)
+            {
+                $scope.grid=response.data.flats;    
+                
+                console.log("nnn");
+                $scope.z++;
+                $scope.sendDate($scope.mymonth,$scope.myyear);
+            }
+            $scope.getAllFlatsDataSuccessHandler = function(response)
             {
                 console.log(response);
-                $scope.owners = response.data.docs;
-                console.log($scope.owners);
-                $scope.getOwnerDetails();
-                $scope.firstFunction();
-                $scope.getRandomSpan();
-
+                $scope.flatnos=response.data.flats;
+                console.log("jkjkjj");
+                $scope.sendDate($scope.mymonth,$scope.myyear);
+                
             }
             
             $scope.getOwnerDetails = function()
@@ -350,25 +352,6 @@ Heads <br>
                     .success(function (response) { $scope.emailcontent=response.docs; });
             }
                     
-
-            $scope.getRandomSpan =function()
-            {
-                for(var i=0;i<$scope.owners.length;i++)
-                {
-                    $scope.owners[i].dues=Math.floor(Math.random()*2);
-                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
-                    if($scope.duesoftheyear[i]=== 0)
-                    {
-                        $scope.tenants[i].dues=1;
-                        break;
-                    }
-                    else if($scope.duesoftheyear[i] ===1 || $scope.duesoftheyear[i] ===2)
-                    {
-                        $scope.tenants[i].dues= 0;
-                    }
-                    
-                }
-            }
 
             $scope.firstFunction = function()
             {
@@ -405,12 +388,22 @@ Heads <br>
         });
 
         app.factory("DataService",function($http,$location){
-    
             var _getDataService = 
             {
-                
+                getAllFlatsData :function()
+                {
+                    console.log("first");
+                    return $http.get('/getFlats');
+                },
+                getAllMonthsData :function(month,selectedyear)
+                {
+                    console.log(selectedyear);
+                    
+                    return $http.get('/sendstatus/'+month+'/'+selectedyear);
+                },                
                 getOwnersData : function()
                 {
+                    console.log("FIRST");
             	   return $http.get('/ownerDetails');
                 },
                 getFlatsData : function()
@@ -419,6 +412,7 @@ Heads <br>
                 },
                 getTenantsData : function()
                 {
+                    console.log("ll");
                     return $http.get('/tenantDetails');
                 },
             
