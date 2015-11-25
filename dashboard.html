@@ -105,12 +105,12 @@ body,td,th {
                         <span class="icon-bar"></span>
                     </button>
 
-                    <a class="navbar-brand" href="https://www.google.co.in/#q=kendriya+vihar+hyderabad+indira+nagar">K.V.Phase-II</a>
+                    <a class="navbar-brand" href="/">K.V.Phase-II</a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
-                        <li class="active" ng-click="searched = false;flatNumberEntered='' "><a href="">Dashboard</a></li>
+                        <li class="active" ng-click="searched = false;flatNumberEntered='' "><a href="/dashboard">Dashboard</a></li>
                         <li class="inactive"><a href="/receipts">Receipts</a></li>
                         <li class="inactive"><a href="/maintenance">Maintenence</a></li>
                         <!--<li class="inactive"><a href="/email">Emails</a></li>-->
@@ -256,14 +256,15 @@ Occupation :
         </button>
         </div>
         </h3>        
-	<p> Registration Number : {{f.REGISTRATION_NUMBER}}
+	<p> Sales Deed Date : {{f.SALE_DEED_DATE}}
+        <br/><br/>
+		Registration Number : {{f.REGISTRATION_NUMBER}}
         <br/><br/>
         Property Tax Number : {{f.PROPERTY_TAX_NUMBER}}
         <br/><br />
         Electricity Service Number : {{f.ELECTRICITY_SERVICE_NUMBER}}
         <br/><br/>
-        Sales Deed Date : {{f.SALE_DEED_DATE}}
-        <br/><br/>
+        
         Block Number : {{f.BLOCK_NUMBER}}
         <br/><br/>
         Car parking slots : {{f.CAR_PARKING_SLOTS}}
@@ -329,7 +330,7 @@ Occupation :
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(flatNumberEntered)">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateOData()">Save Changes</button>
       </div>
     </div>
@@ -365,11 +366,11 @@ Occupation :
             <label for="t.EMAIL_IDS" class="control-label">Email ID :</label>
             <input type="text" class="form-control" ng-model="t.EMAIL_IDS">
           </div>
-
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(flatNumberEntered)">Cancel</button>
+          
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateTData()">Save Changes</button>
       </div>
     </div>
@@ -413,7 +414,7 @@ Occupation :
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(inputsearch)">Cancel</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getFlatDetails(flatNumberEntered)">Cancel</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateFData()">Save Changes</button>
       </div>
     </div>
@@ -498,7 +499,6 @@ Occupation :
                 };
                 $http.put('/flat/'+ $scope.flatdbid,request);
             }
-            
             $scope.resetLabels = function()
             {
                     $scope.t="";
@@ -510,11 +510,9 @@ Occupation :
                     $scope.ownerdbid="";
                     $scope.tenantdbid="";                    
             }
-            
             $scope.getFlatDetails = function (inputsearch) 
             {
                 inputsearch = angular.uppercase(inputsearch);
-        
                 $scope.resetLabels();
                 if(inputsearch == "")
                 {
@@ -522,6 +520,7 @@ Occupation :
                 else
                 {
                     $scope.searched = true;
+                    $scope.flatNumberEntered=inputsearch;
                     console.log(inputsearch);
                     for (var i = 0; i < $scope.flat.length; i++) 
                     {

@@ -426,4 +426,8 @@ app.get('/maintenance', function (req, res) {
     res.sendFile(__dirname + '/maintenance.html');
 });
 
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/dashboard.html');
+});
+
 });
