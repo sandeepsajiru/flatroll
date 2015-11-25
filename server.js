@@ -277,10 +277,6 @@ app.get('/sendMail/:FLAT_NO',function(req,res){
         .toArrayfunction(err,flats){
             for(var i=0 ; i < flats.length ; i++)
             {*/
-                settings.find({}, {MaintenanceReminderMailTemplate:1}, function (err, docs) {
-        x = JSON.stringify(docs,['MaintenanceReminderMailTemplate']);
-        console.log(x);
-    });
                 tenants.find
                 (
                     {FLAT_NO : req.params.FLAT_NO},
@@ -301,10 +297,10 @@ app.get('/sendMail/:FLAT_NO',function(req,res){
                         mail = JSON.stringify(email, ['EMAIL_IDS']);
                         var mailOptions = 
                         {
-                            from: 'abc',
+                            from: 'KV Phase II',
                             to: mail, 
-                            subject: 'Text',
-                            text: x
+                            subject: 'Reminder',
+                            text: 'Dear Sir/Madam, \n\n This is a gentle reminder that you have not yet paid the maintenance for the month of %MONTH% (%YEAR%). \n\n Please pay it as soon as possible to avoid %CUSTOM_1%. \n\n Regards \n %CUSTOM_2% "'
                         }
                         smtpTransport.sendMail(mailOptions, function(error, response){
                             if(error){
