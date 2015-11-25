@@ -311,7 +311,7 @@ app.get('/sendMail/:FLAT_NO',function(req,res){
                                 console.log(error);
                             }
                             else{
-                                
+                                res.json(1);
                             }
                         });
                     }
