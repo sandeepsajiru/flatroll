@@ -22,6 +22,7 @@ var Schema = mongoose.Schema;
 
 var tenantSchema = new Schema(
 {
+    FLAT_NO: 'string',
     TENANT_ID: 'string',
     FIRST_NAME: 'string',
     MIDDLE_NAME: 'string',
@@ -74,13 +75,13 @@ var receiptsSchema = new Schema(
     remarks: 'string',
     received: 'string',
     year: 'string',
-    months: ['string']    
+    months: 'string'    
 });
 
 var settingsSchema = new Schema(
     {
         ID:'string',
-        MaintenanceReminderMailTemplate:'string',
+        Template:'string',
         CustomFields:['string'],
         CreatedOn:Date
     });
@@ -215,7 +216,11 @@ app.post('/',function(req, res){
         console.log(Receipt)
 	});    
 
-//app.post('/postMailTemplate', functoin    
+app.post('/postMailTemplate/:Template', function (req,res){
+    var Setting = new settings({
+    Template : req.body.Template
+    })
+});
 
 app.get('/tenantDetails', function (req, res) {
     tenants.find({}, function (err, docs) {
@@ -229,11 +234,9 @@ app.get('/ownerDetails', function (req, res) {
     });
 });
     
-app.get('/settings',function(req,res){
-    var m = [];
-    var id = ['a'];
-    var name = [];
-   receipts.find({year : '2015'}, function(err, docs){
+app.get('/sendMail/:FLAT_NO',function(req,res){
+    /*var name = [];
+   receipts.find({year : req.params.year}, function(err, docs){
                         for(var i=0,j=0; i<docs.length;i++)
                         {
                             if(docs[i].year!=null)
@@ -264,31 +267,79 @@ app.get('/settings',function(req,res){
         });
     }
    });
-    
-   
-    var smtpTransport = nodemailer.createTransport("SMTP",{
-        service: "Gmail",
-        auth: {
-            user: "samplebz1@gmail.com",
-            pass: "beingzero"
+    receipts.find({
+        year : req.params.year ,
+        month : req.params.month },
+        {
+            _id : 0;
+            flatNo : 1
         }
+        .toArrayfunction(err,flats){
+            for(var i=0 ; i < flats.length ; i++)
+            {*/
+                settings.find({}, {MaintenanceReminderMailTemplate:1}, function (err, docs) {
+        x = JSON.stringify(docs,['MaintenanceReminderMailTemplate']);
+        console.log(x);
     });
-     for(var i=0;i<name.length;i++)
-    {
-    var mailOptions = {
-        from: name[i],
-        to: "johnnikhil95@gmail.com", 
-        subject: 'Test',
-        text: 'message'
-    }
-    smtpTransport.sendMail(mailOptions, function(error, response){
-        if(error){
-            console.log(error);
-        }else{
-            res.redirect('/dashboard');
+                tenants.find
+                (
+                    {FLAT_NO : req.params.FLAT_NO},
+                    {
+                      EMAIL_IDS : 1
+                    },
+                    function(err,email)
+                    {
+                        var smtpTransport = nodemailer.createTransport("SMTP",{
+                            service: "Gmail",
+                            auth: 
+                            {
+                                user: "samplebz1@gmail.com",
+                                pass: "beingzero"
+                            }
+                        });
+                        var mail;
+                        mail = JSON.stringify(email, ['EMAIL_IDS']);
+                        var mailOptions = 
+                        {
+                            from: 'abc',
+                            to: mail, 
+                            subject: 'Text',
+                            text: x
+                        }
+                        smtpTransport.sendMail(mailOptions, function(error, response){
+                            if(error){
+                                console.log(error);
+                            }
+                            else{
+                                
+                            }
+                        });
+                    }
+                );  
+});
+
+app.get('/getFlats',function(req,res){
+    flats.find({},
+        {
+            FLAT_NO : 1
         }
-    });
-    }
+        ,function(err,flats){
+            res.json({flats : flats});
+        });
+
+});
+
+app.get('/sendstatus/:month/:year',function(req,res){
+    receipts.find({
+        year : req.params.year ,
+        month : req.params.month },
+        {
+            flatNo : 1
+        }
+        ,function(err,flats){
+            res.json({flats : flats});
+        });
+
 });
 
 /*    
@@ -337,10 +388,12 @@ app.get('/flatDetails', function (req, res) {
 });
 
 app.get('/email', function (req, res) {
-    settings.find({}, function (err, docs) {
+    settings.find({}, {MaintenanceReminderMailTemplate:1}, function (err, docs) {
         res.json({  docs: docs });
+        x = JSON.stringify(docs);
+        console.log(x);
     });
-});   
+});
     
 app.get('/receiptDetails', function (req, res) {
     console.log('Got Get Call');
@@ -367,6 +420,10 @@ app.get('/receipts', function (req, res) {
 
 app.get('/dashboard', function (req, res) {
     res.sendFile(__dirname + '/dashboard.html');
+});
+    
+app.get('/maintenance', function (req, res) {
+    res.sendFile(__dirname + '/maintenance.html');
 });
 
 });
