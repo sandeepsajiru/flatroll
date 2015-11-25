@@ -1,6 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<html lang="en" ng-app="myApp">
+  <head>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    <meta name="viewport" content="initial-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Detail Page</title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
@@ -8,83 +10,18 @@
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/resources/demos/style.css" />
     <script type="text/javascript" src="jquery.js"></script>
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $(".accordion h3:first").addClass("active");
-            $(".accordion p:not(:first)").hide();
-
-            $(".accordion h3").click(function () {
-                $(this).next("p").slideToggle("slow")
-                .siblings("p:visible").slideUp("slow");
-                $(this).toggleClass("active");
-                $(this).siblings("h3").removeClass("active");
-            });
-
-        });
-    </script>
-
-
-    <style type="text/css">
-        body {
-            margin: 10px auto;
-            width: 100%;
-            font: 75%/120% Arial, Helvetica, sans-serif;
-        }
-
-        .accordion {
-            width: 100%;
-            float: right;
-            border-bottom: solid 1px #c4c4c4;
-        }
-
-            .accordion h3 {
-                background: #e9e7e7 url(images/arrow-square.gif) no-repeat right -51px;
-                padding: 7px 15px;
-                margin: 0;
-                font: bold 120%/100% Arial, Helvetica, sans-serif;
-                border: solid 1px #c4c4c4;
-                border-bottom: none;
-                cursor: pointer;
-            }
-
-                .accordion h3:hover {
-                    background-color: #e3e2e2;
-                }
-
-                .accordion h3.active {
-                    background-position: right 5px;
-                }
-
-            .accordion p {
-                background: #f7f7f7;
-                margin: 0;
-                padding: 10px 15px 20px;
-                border-left: solid 1px #c4c4c4;
-                border-right: solid 1px #c4c4c4;
-            }
-
-        body, td, th {
-            font-size: 16px;
-        }
-    </style>
-</head>
-
-<body>
-    <div ng-app="receipts" ng-controller="myCtrl">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
+  </head>
+  <body  >
+      <div ng-app="myApp" ng-controller="customersCtrl">
+              <nav class="navbar navbar-inverse">
+            <div class="container-fluid" >
                 <div class="navbar-header ">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                         <span class="icon-bar"></span>
@@ -97,8 +34,10 @@
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
-                        <li class="active"><a href="/dashboard">Dashboard</a></li>
+                        <li class="inactive" ng-click="searched = false;flatNumberEntered='' "><a href="/dashboard">Dashboard</a></li>
                         <li class="active"><a href="/receipts">Receipts</a></li>
+                        <li class="inactive"><a href="/maintenance">Maintenence</a></li>
+                     
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -108,258 +47,263 @@
             </div>
         </nav>
 
-        <div ng-hide="idEditorEnabled">Flat Number: {{flatNo}}
-            <a href="" ng-click="enableEditor(1)">Enter Flat Number</a>
-        </div>
-        <div ng-show="flatEditorEnabled">
-            <input ng-model="editableFlatNo" ng-show="flatEditorEnabled">
-            <a href="" ng-click="save(1)">Save</a>
-            or
-            <a href="" ng-click="disableEditor(1)">cancel</a>
-        </div><br>
-        
-        <div ng-hide="receiptIdEditorEnabled">Receipt ID: {{receiptId}}
-            <a href="" ng-click="enableEditor(2)">Change Receipt</a>
-        </div>
-        <div ng-show="receiptIdEditorEnabled">
-            <input ng-model="editableReceiptId" ng-show="receiptIdEditorEnabled">
-            <a href="" ng-click="save(2)">Save</a>
-            or
-            <a href="" ng-click="disableEditor(2)">cancel</a>
-        </div><br>
-        
-        <div ng-hide="amountEditorEnabled">Amount: {{amount}}
-            <a href="" ng-click="enableEditor(3)">Change Amount</a>
-        </div>
-        <div ng-show="amountEditorEnabled">
-            <input ng-model="editableAmount" ng-show="amountEditorEnabled">
-            <a href="" ng-click="save(3)">Save</a>
-            or
-            <a href="" ng-click="disableEditor(3)">cancel</a>
-        </div><br>
-        
-        <div ng-hide="dateEditorEnabled">Date: {{date | date:'dd-MM-yyyy'}}<br>
-            <a href="" ng-click="enableEditor(4)">Change Date</a>
+      
+    <!-- Angular Material Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+                                        <div class="form-group">              
+                              <div class="row">
+<div class="col-sm-9 col-md-9">                  
+    
+                                  </div>
+<div class="col-sm-3 col-md-3">                  
+
+                          <div ng-hide="dateEditorEnabled">Date: {{date | date:'dd-MM-yyyy'}}<br>
+            <a href="" ng-click="enableEditor()">Change Date</a>
         </div>
         <div ng-show="dateEditorEnabled">
             <input type="date" ng-model="editableDate" ng-show="dateEditorEnabled">
-            <a href="" ng-click="save(4)">Save</a>
+            <a href="" ng-click="save()">Save</a>
             or
-            <a href="" ng-click="disableEditor(4)">cancel</a>
+            <a href="" ng-click="disableEditor()">cancel</a>
         </div><br>
-        
-        Mode of Payment: <select ng-options="paymentItem as paymentItem.name for paymentItem in paymentItems" ng-model="paymentItem" ng-change="update(1)"></select><br><br>
-        
-        Payment Type: <select ng-options="paymentType as paymentType.name for paymentType in paymentTypes" ng-model="paymentType" ng-change="update(2)"></select><br><br>
-        
-        <div ng-hide="remarksEditorEnabled">Remarks: {{remarks}}
-            <a href="" ng-click="enableEditor(5)">Add Remarks</a>
-        </div>
-        <div ng-show="remarksEditorEnabled">
-            <input ng-model="editableRemarks" ng-show="remarksEditorEnabled">
-            <a href="" ng-click="save(5)">Save</a>
-            or
-            <a href="" ng-click="disableEditor(5)">cancel</a>
-        </div><br>
-        
-        <div ng-hide="receivedEditorEnabled">Received By: {{received}}
-            <a href="" ng-click="enableEditor(6)">Add Person Name</a>
-        </div>
-        <div ng-show="receivedEditorEnabled">
-            <input ng-model="editableReceived" ng-show="receivedEditorEnabled">
-            <a href="" ng-click="save(6)">Save</a>
-            or
-            <a href="" ng-click="disableEditor(6)">cancel</a>
-        </div><br>
-        Paid for Month/Months: 
-        <label ng-repeat="month in months">
-      <input
-        type="checkbox"
-        value="{{month}}"
-        ng-checked="selection.indexOf(month) > -1"
-        ng-click="toggleSelection(month)">
-       {{month}} 
-         </label>
-        <div ng-hide="yearEditorEnabled">Payment for the year: {{year}}
-            <a href="" ng-click="enableEditor(7)">Change year</a>
-        </div>
-        <div ng-show="yearEditorEnabled">
-            <input ng-model="editableYear" ng-show="yearEditorEnabled">
-            <a href="" ng-click="save(7)">Save</a>
-            or
-            <a href="" ng-click="disableEditor(7)">cancel</a>
-        </div>
-        <br><br>
-        <button ng-href="" ng-click="createReceipts()">Submit</button>
+
+                                  </div>
+                                  </div>
+          </div>
+                                                  <div class="form-group">              
+                              <div class="row">
+<div class="col-sm-1 col-md-1">
+                                  </div>
+<div class="col-sm-10 col-md-10">                  
+    <div layout layout-sm="column">
+                <md-input-container flex>
+          <label>Flat Number: </label>
+          <input ng-model="flatNo" >
+        </md-input-container>
+                          <md-input-container flex>
+          <label>Recipt ID: </label>
+          <input ng-model="receiptId" >
+        </md-input-container>
 
     </div>
 
-    <script>
-        var app = angular.module('receipts', []);
-        app.controller('myCtrl', function ($scope,$http) {
+                                  </div>
+<div class="col-sm-1 col-md-1">                  
+
+
+                                  </div>
+                                  </div>
+          </div>
+
+                                        <div class="form-group">              
+                              <div class="row">
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                  
+<div class="col-sm-10 col-md-10">                  
+              <md-input-container flex>
+          <label>Amount: </label>
+          <input ng-model="amount" >
+        </md-input-container>    
+                                  </div>
+<div class="col-sm-1 col-md-1">                  
+
+
+                                  </div>
+                                  </div>
+          </div>
+                                        <div class="form-group">              
+                              <div class="row">
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                  <div class="col-sm-10 col-md-10">                  
+                                          <div layout layout-sm="column">
+                                                      <md-input-container flex>
+          Mode Of Payment :
+          <md-select ng-model="paymentMode" >
+            <md-option ng-repeat="paymentItem in paymentItems" value="{{paymentItem.name}}">
+              {{paymentItem.name}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+            <md-input-container flex>
+          Payment Type:
+          <md-select ng-model="paymentTyp" >
+            <md-option ng-repeat="paymentType in paymentTypes" value="{{paymentType.name}}">
+              {{paymentType.name}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+
+                                  </div>
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                            </div>
+          </div>
+          </div>
+                                            
+                              <div class="form-group">              
+                              <div class="row">          
+          <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                  <div class="col-sm-10 col-md-10">                  
+                <div layout layout-sm="column">                       
+                 <md-input-container flex>
+          <label>Recieved By: </label>
+          <input ng-model="received" >
+        </md-input-container>
+                                      
+                              <md-input-container flex>
+          <label>Payment for the year: </label>
+          <input name="Payment for the year: " ng-model="year" 
+                 required ng-pattern="/^[0-9]{4}$/" md-maxlength="4">
+        </md-input-container>
+                                      </div>
+          </div>
+                                  
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                            </div>
+          </div>
+
+          
+                              <div class="form-group">              
+                              <div class="row">
+<div class="col-sm-3 col-md-3">                  
+    
+                                  </div>
+<div class="col-sm-6 col-md-6">                  
+    <div flex="100" flex-gt-sm="25" layout="row" >
+      <fieldset class="standard" flex>
+        <legend>Paid for Month/Months:  </legend>
+        <div layout="row" layout-wrap flex>
+          <div flex="25" ng-repeat="item in months">
+            <md-checkbox ng-checked="selection.indexOf(item) > -1" ng-click="toggleSelection(item)" value="{{item}}">
+                
+            {{item}} <span ng-if="exists(item, selected)">selected</span>
+            </md-checkbox>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+                                  </div>
+<div class="col-sm-3 col-md-3">                  
+                                  </div>
+                                  </div>
+          </div>
+                             <div class="form-group">              
+                              <div class="row">
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                  <div class="col-sm-10 col-md-10">
+                                      
+                                          <md-input-container class="md-block">
+        <label>Remarks</label>
+        <textarea ng-model="remarks" columns="1" md-maxlength="150" rows="5"></textarea>
+      </md-input-container>
+
+                                  </div>
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                            </div>
+          </div>
+                                 <div class="form-group">              
+                              <div class="row">
+                                  <div class="col-sm-5 col-md-5">                  
+                                  </div>
+                                  <div class="col-sm-7 col-md-7">
+                                      
+    <md-button class=" md-raised md-mini" ng-click="createReceipts();showSimpleToast()" ng-disabled="disableButton()">
+        
+        Submit</md-button>
+                                  </div>
+                                  <div class="col-sm-1 col-md-1">                  
+                                  </div>
+                                            </div>
+          </div>
+                                  </div>
+        <script>
+        var app = angular.module('myApp', ['ngMaterial']);
+        app.controller('customersCtrl', function ($scope,$http,$mdToast) 
+        {
             $scope.paymentItems = [ {id: 1, name: 'Cash'}, {id: 2, name: 'Cheque'}, {id: 3, name: 'Card'}];
             $scope.paymentTypes = [ {id: 1, name: 'Water Charges'}, {id: 2, name: 'Open Car Parking'}, {id: 3, name: 'Misc Vendors'}, {id: 4, name: 'Cable Operators'}, {id: 5, name: 'Internet Operators'}, {id: 6, name: 'Community Hall Booking'}, {id: 7, name: 'Maintenance'}, {id: 8, name: 'Birthday Event'}, {id: 9, name: 'Commercial Event'}];
             $scope.flatNo = "";
-            $scope.flatEditorEnabled = false;
-            $scope.receiptId = "Default Receipt Id";
-            $scope.receiptIdEditorEnabled = false;
-            $scope.amount = "Default Amount";
-            $scope.amountEditorEnabled = false;
+            $scope.receiptId ;
+            $scope.amount ;
             $scope.date = new Date();
             $scope.dateEditorEnabled = false;
             $scope.paymentMode;
             $scope.paymentTyp;
-            $scope.remarks = "Default Remarks";
-            $scope.remarksEditorEnabled = false;
-            $scope.received = "Received by";
-            $scope.receivedEditorEnabled = false;
+            $scope.remarks;
+            $scope.received ;
             var getYear = new Date().getFullYear();
             $scope.year = getYear;
-            $scope.yearEditorEnabled = false;
             $scope.createReceipts;
-            $scope.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            $scope.disable=false;
+            $scope.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; 
             $scope.selection = [];
-            
-            
-            $scope.createReceipts = function() {
-            
-            var data = {
-            flatNo:$scope.flatNo,
-            receiptId:$scope.receiptId ,
-            amount:$scope.amount ,
-            date:$scope.date ,
-            paymentMode:$scope.paymentMode,
-            paymentTyp:$scope.paymentTyp,
-            remarks:$scope.remarks ,
-            received:$scope.received ,
-            year:$scope.year ,
-            months:$scope.selection
-        };
-        $http.post('/', data)
-            .success(function(data) {
-                $scope.receipts = data;
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
-                window.log('Submitted')
-        };
-            
-            $scope.update = function(x) {
-                if(x==1)
+            $scope.disableButton = function()
+            {
+                if($scope.flatNo!="" && $scope.receiptId!="" && $scope.amount!="" && $scope.paymentMode!="" &&
+                  $scope.paymentTyp!="" && $scope.received!="" && $scope.selection!="" )
                 {
-                $scope.paymentMode = $scope.paymentItem.name;
+                    return false;
                 }
-                if(x==2)
-                {
-                $scope.paymentTyp = $scope.paymentType.name;
-                }
+                return true;
             }
+            $scope.reset = function()
+            {
+                $scope.flatNo="";
+                $scope.receiptId="";
+                $scope.amount="";
+                $scope.paymentMode="";
+                $scope.paymentTyp="";
+                $scope.received="";
+                $scope.selection="";
+            }
+            $scope.createReceipts = function() {
+                        
+                    $scope.disable=false;
+                    $scope.flatNo=angular.uppercase($scope.flatNo);
+                    var data = {
+                    flatNo:$scope.flatNo,
+                    receiptId:$scope.receiptId ,
+                    amount:$scope.amount ,
+                    date:$scope.date ,
+                    paymentMode:$scope.paymentMode,
+                    paymentTyp:$scope.paymentTyp,
+                    remarks:$scope.remarks ,
+                    received:$scope.received ,
+                    year:$scope.year ,
+                    months:$scope.selection
+                    };
+                    $http.post('/', data)
+                        .success(function(data) {
+                            $scope.receipts = data;
+                        })
+                        .error(function(data) {
+                            console.log('Error: ' + data);
+                        });
+                        
+                        $scope.reset();    
+                
+                };
             
-            $scope.enableEditor = function (x) {
-                if(x==1)
-                {
-                $scope.flatEditorEnabled = true;
-                $scope.editableFlatNo = $scope.flatNo;
-                }
-                if(x==2)
-                {
-                $scope.receiptIdEditorEnabled = true;
-                $scope.editableReceiptId = $scope.receiptId;
-                }
-                if(x==3)
-                {
-                $scope.amountEditorEnabled = true;
-                $scope.editableAmount = $scope.amount;
-                }
-                if(x==4)
-                {
+            $scope.enableEditor = function () {
                 $scope.dateEditorEnabled = true;
                 $scope.editableDate = $scope.date;
-                }
-                if(x==5)
-                {
-                $scope.remarksEditorEnabled = true;
-                $scope.editableRemarks = $scope.remarks;
-                }
-                if(x==6)
-                {
-                $scope.receivedEditorEnabled = true;
-                $scope.editableReceived = $scope.received;
-                }
-                if(x==7)
-                {
-                $scope.yearEditorEnabled = true;
-                $scope.editableYear = $scope.year;
-                }
             };
-            $scope.disableEditor = function (x) {
-                if(x==1)
-                {
-                $scope.flatEditorEnabled = false;
-                }
-                if(x==2)
-                {
-                $scope.receiptIdEditorEnabled = false;
-                }
-                if(x==3)
-                {
-                $scope.amountEditorEnabled = false;
-                }
-                if(x==4)
-                {
+            $scope.disableEditor = function () {
                 $scope.dateEditorEnabled = false;
-                }
-                if(x==5)
-                {
-                $scope.remarksEditorEnabled = false;
-                }
-                if(x==6)
-                {
-                $scope.receivedEditorEnabled = false;
-                }
-                if(x==7)
-                {
-                $scope.yearEditorEnabled = false;
-                }
             };
 
-            $scope.save = function (x) {
-                if(x==1)
-                {
-                $scope.flatNo = $scope.editableFlatNo;
-                $scope.disableEditor(x);
-                }
-                if(x==2)
-                {
-                $scope.receiptId = $scope.editableReceiptId;
-                $scope.disableEditor(x);
-                }
-                if(x==3)
-                {
-                $scope.amount = $scope.editableAmount;
-                $scope.disableEditor(x);
-                }
-                if(x==4)
-                {
+            $scope.save = function () {
                 $scope.date = $scope.editableDate;
-                $scope.disableEditor(x);
-                }
-                if(x==5)
-                {
-                $scope.remarks = $scope.editableRemarks;
-                $scope.disableEditor(x);
-                }
-                if(x==6)
-                {
-                $scope.received = $scope.editableReceived;
-                $scope.disableEditor(x);
-                }
-                if(x==7)
-                {
-                $scope.year = $scope.editableYear;
-                $scope.disableEditor(x);
-                }
+                $scope.disableEditor();
             };
             
           $scope.toggleSelection = function toggleSelection(month) {
@@ -375,9 +319,47 @@
               $scope.selection.push(month);
             }
           };
+            
+                        
+ var last = {
+      bottom: true,
+      top: true,
+        
+      left: true,
+      right: true
+    };
+  $scope.toastPosition = angular.extend({},last);
+  $scope.getToastPosition = function() {
+    sanitizePosition();
+    return Object.keys($scope.toastPosition)
+      .filter(function(pos) { return $scope.toastPosition[pos]; })
+      .join(' ');
+  };
+  function sanitizePosition() {
+    var current = $scope.toastPosition;
+    if ( current.bottom && last.top ) current.top = false;
+    if ( current.top && last.bottom ) current.bottom = false;
+    if ( current.right && last.left ) current.left = false;
+    if ( current.left && last.right ) current.right = false;
+    last = angular.extend({},current);
+  }
+  $scope.showSimpleToast = function() {
+    $mdToast.show(
+      $mdToast.simple()
+        .content('Recipt Added..!!')
+        .position($scope.getToastPosition())
+        .hideDelay(3000)
+    );
+  };
+
+})
+.controller('ToastCtrl', function($scope, $mdToast) {
+  $scope.closeToast = function() {
+    $mdToast.hide();
+  }; 
         });
+            
         
     </script>
-    
-</body>
+    </body>
 </html>
