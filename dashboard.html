@@ -154,13 +154,6 @@ body,td,th {
 
             Flat Details
                 </div>
-        <!--                     <div class="col-sm-1 col-md-1">                  
-                  <md-button class="md-warn md-raised md-fab" aria-label="Eat cake" ng-click="sendmails()">
-                      <span class="glyphicon glyphicon-send"></span>
-                        <md-tooltip> Mails</md-tooltip>
-                  </md-button>                                 
-                                </div>
--->
                 </div>
                 </div>
             </h2>
@@ -614,17 +607,6 @@ Occupation :
                 for(var i=0;i<$scope.owners.length;i++)
                 {
                     $scope.owners[i].dues=Math.floor(Math.random()*2);
-/*                    $scope.duestatusfn($scope.tenants[i].FLAT_NO,$scope.end);
-                    if($scope.duesoftheyear[i]=== 0)
-                    {
-                        $scope.tenants[i].dues=1;
-                        break;
-                    }
-                    else if($scope.duesoftheyear[i] ===1 || $scope.duesoftheyear[i] ===2)
-                    {
-                        $scope.tenants[i].dues= 0;
-                    }
-  */                  
                 }
             }
 
@@ -650,27 +632,7 @@ Occupation :
                     
                 }
             }
-            
-            $scope.sendmails = function()
-            {
-                for(var i=0;i<$scope.tenants.length ; i++)
-                {
-                    if($scope.tenants[i].dues == 1)
-                    {
-                        $scope.mailedlist[i] = $scope.tenants[i].EMAIL_IDS;
-                    }
-                }
-                
-                $http.post('/dues', data)
-                .success(function(data) {
-                    $scope.mailedlist = data;
-                })
-                .error(function(data) {
-                    console.log('Error: ' + data);
-                });
-                            
-            }
-                            
+                                        
             $http.get("/flatDetails")
             .success(function (response) { $scope.flat = response.docs; });
 
