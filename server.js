@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var nodemailer = require('nodemailer');
-
+var prototypes = require('prototypes');
 // Mongoose import
 
 var mongoose = require('mongoose');
@@ -234,58 +234,15 @@ app.get('/ownerDetails', function (req, res) {
     });
 });
     
-app.get('/sendMail/:FLAT_NO',function(req,res){
-    /*var name = [];
-   receipts.find({year : req.params.year}, function(err, docs){
-                        for(var i=0,j=0; i<docs.length;i++)
-                        {
-                            if(docs[i].year!=null)
-                            {
-                                m[j] =docs[i].flatNo;
-                                //console.log(m.length);
-                                //console.log(m[j]);
-                                j++;
-                                
-                            }
-                        }
-       console.log('Entered');
-       for(var i=0,j=0;i<m.length;i++)
-    {
-        flats.find({ FLAT_NO: m[i]}, function(err, docs){
-            id.push(docs[i].OWNERS);
-        });
-        console.log('LENGTH OF ID ARRAY: '+id.length);
-        j++;
+app.get('/sendMail/:flats',function(req,res){
+    
+         var flatnos = req.params.flats;
+        var flats = [];
+    for( var i=0,j=0; i<flatnos.length ;i=i+5,j++){
+        var temp = flatnos[i]+flatnos[i+1]+flatnos[i+2]+flatnos[i+3];
+        flats[j] = temp;
     }
-    for(var i=0;i<id.length;i++)
-    {
-        owners.find({ OWNER_ID: id[i]}, function(err, docs){
-            name[i] = docs[i].LAST_NAME;
-            mail[i] = docs[i].EMAIL_IDS;
-            phone[i] = docs[i].PHONE_NUMBERS;
-            console.log(name[i]);
-        });
-    }
-   });
-    receipts.find({
-        year : req.params.year ,
-        month : req.params.month },
-        {
-            _id : 0;
-            flatNo : 1
-        }
-        .toArrayfunction(err,flats){
-            for(var i=0 ; i < flats.length ; i++)
-            {*/
-                tenants.find
-                (
-                    {FLAT_NO : req.params.FLAT_NO},
-                    {
-                      EMAIL_IDS : 1
-                    },
-                    function(err,email)
-                    {
-                        var smtpTransport = nodemailer.createTransport("SMTP",{
+    var smtpTransport = nodemailer.createTransport("SMTP",{
                             service: "Gmail",
                             auth: 
                             {
@@ -293,25 +250,43 @@ app.get('/sendMail/:FLAT_NO',function(req,res){
                                 pass: "beingzero"
                             }
                         });
+    for( var i=0;i<1;i++)
+    {
+        tenants.find
+                (
+                    {FLAT_NO : flats[i]},
+                    {
+                      EMAIL_IDS : 1
+                    },
+                    function(err,email)
+                    {
                         var mail;
-                        mail = JSON.stringify(email, ['EMAIL_IDS']);
+                        mail = JSON.stringify(email,["EMAIL_IDS"]);
+                        mail = mail.replace('[{"EMAIL_IDS":"','');
+                        mail = mail.replace('"}]','');
+                        mail = mail.replace(' ','');
+                        if(mail.length>0&&mail.contains('@'))
+                        {
                         var mailOptions = 
                         {
-                            from: 'KV Phase II',
-                            to: mail, 
+                            from: 'samplebz1@gmail.com',
+                            to: 'johnnikhil95@gmail.com', 
                             subject: 'Reminder',
-                            text: 'Dear Sir/Madam, \n\n This is a gentle reminder that you have not yet paid the maintenance for the month of %MONTH% (%YEAR%). \n\n Please pay it as soon as possible to avoid %CUSTOM_1%. \n\n Regards \n %CUSTOM_2% "'
+                            text: 'Dear Sir/Madam, \n\n This is a gentle reminder that you have not yet paid the maintenance for the month of '+ months+' ' +'('+year+')'+'. \n\n Please pay it as soon as possible. \n\n Regards \n '
                         }
                         smtpTransport.sendMail(mailOptions, function(error, response){
                             if(error){
                                 console.log(error);
                             }
                             else{
-                                res.json(1);
                             }
                         });
+                        }
+                        
                     }
                 );  
+    }
+    smtpTransport.close();
 });
 
 app.get('/getFlats',function(req,res){
@@ -325,7 +300,11 @@ app.get('/getFlats',function(req,res){
 
 });
 
+var year,months;
+
 app.get('/sendstatus/:month/:year',function(req,res){
+    year = req.params.year;
+    months = req.params.month;
     receipts.find({
         year : req.params.year ,
         months : {$in: [req.params.month]} },

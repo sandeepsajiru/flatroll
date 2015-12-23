@@ -47,6 +47,11 @@
     background-color: red;
     color: white;
 }
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 400px; 
+    height: 300px;
+}
       </style>
   </head>
   <body  >
@@ -65,7 +70,7 @@
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-left">
                         <li class="inactive"><a href="">Home</a></li>
-                        <li class="inactive"><a href="/dashboard">Dashboard</a></li>
+                        <li class="inactive" ng-click="searched = false;flatNumberEntered='' "><a href="/dashboard">Dashboard</a></li>
                         <li class="inactive"><a href="/receipts">Receipts</a></li>
                         <!--<li class="inactive"><a href="/email">Emails</a></li> -->
                         <li class="active"><a href="">Maintenance</a></li>
@@ -155,6 +160,18 @@
     {
             
             $scope.searched = false;
+            $scope.ownerdbid="";
+            $scope.flatdbid="";
+            $scope.tenantdbid="";
+            $scope.ownerid = "";
+            $scope.flatNumberEntered;
+            $scope.flatno="";            
+            $scope.color =[ 'red' , 'green' ];
+            $scope.years =[ 'JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC' ];
+            $scope.showsidenav=true;
+            $scope.t="";
+            $scope.o="";
+            $scope.f="";
             $scope.date = new Date();
             var previousMonth = new Date($scope.date);
             var previousYear = new Date($scope.date);
@@ -166,7 +183,6 @@
             $scope.end = new Date().getFullYear();
             var e=$scope.end;
             $scope.myyear=$scope.end;
-            $scope.selectedyear=$scope.end;
             var options = "";
             for(var year = $scope.end ; year >=start; year--)
             {
@@ -196,67 +212,107 @@
                 else 
                     return 'red';
             }
+            $scope.gridOptions = { 
+                data: 'grid',
+                columnDefs: [
+                     {field:'FLAT_NO', cellTemplate: '<div ng-class="{green: row.getcolor(col.field) == 1}"><div class="ngCellText">{{row.getcolor(col.field.FLATNO)}}</div></div>'}]
+            };  
             $scope.formarray = function(month,selectedyear)
             {
-            //    console.log("HELO");
+                console.log("HELO");
                 for(var i=0;  i< $scope.flatnos.length ; i++)
                 {
                     $scope.flatnos[i].status='red';
                     for(j=0;j< $scope.grid.length;j++)
                     {
-               //         console.log($scope.flatnos[i].FLAT_NO);
+                        console.log($scope.flatnos[i].FLAT_NO);
                         $scope.grid[j].flatNo = angular.uppercase($scope.grid[j].flatNo);
-                 //       console.log($scope.grid[j].flatNo);
+                        console.log($scope.grid[j].flatNo);
                         if($scope.flatnos[i].FLAT_NO === $scope.grid[j].flatNo && $scope.grid[j].complete!="1")
                         {
                             $scope.grid[j].complete = 1;
-                   //         console.log($scope.flatnos[i].FLAT_NO);
+                            console.log($scope.flatnos[i].FLAT_NO);
                             $scope.flatnos[i].status='green';
                             break;
                         }
                     }
                 }
-                //console.log("okay");
+                console.log("okay");
                 $scope.visible=true;
             }
             $scope.z="0";
             $scope.sendDate = function(month,selectedyear)
             {
-            //    console.log(month);
-              //  console.log(selectedyear);
+                console.log(month);
+                console.log(selectedyear);
                 if($scope.z!="0")
                 {
                     $scope.formarray(month,selectedyear);
-                //    console.log("bye");
+                    console.log("bye");
                 }
                 
-//                console.log($scope.z);
+                console.log($scope.z);
             }
   
             $scope.mails = function(flatno)
             {
-                return $http.get("/sendMail/"+flatno).success(function (response) { });
+                return $http.get("/sendMail/"+flatno).success(function (response) { $scope.j=$scope.docs;});
             }            
             $scope.sendmails = function()
             {
-  //              console.log("Succes");
-                $scope.maillist=[];
+                console.log("Succes");
                 for(var i=0; i<$scope.flatnos.length ; i++)
                 {
-                    if($scope.flatnos[i].status === "red")
+                    if($scope.flatnos[i].status === 0)
                     {
-                            console.log("Succes");
-                            $scope.maillist.push($scope.flatnos[i].FLAT_NO);
-//                            $scope.mails($scope.flatnos[i].FLAT_NO);
+                            $scope.mails($scope.flatnos[i].FLAT_NO);
                     }
                 }
-                            $scope.mails($scope.maillist);
-                            //console.log($scope.maillist);
             }
 
+            $scope.getFlatDetails = function (inputsearch) 
+            {
+                inputsearch = angular.uppercase(inputsearch);
+        
+                $scope.resetLabels();
+                if(inputsearch == "")
+                {
+                }
+                else
+                {
+                    $scope.searched = true;
+                    console.log(inputsearch);
+                    for (var i = 0; i < $scope.flat.length; i++) 
+                    {
+                        if ($scope.flat[i].FLAT_NO === inputsearch) 
+                        {
+                            $scope.f = $scope.flat[i];
+                            $scope.ownerid = $scope.flat[i].OWNERS;
+                            $scope.flatdbid =$scope.flat[i]._id;
+                            $scope.flatno = $scope.flat[i].FLAT_NO;
+                            for (var j = 0; j < $scope.owners.length; j++) 
+                            {
+                                if($scope.ownerid === $scope.owners[j].OWNER_ID)
+                                {
+                                    $scope.o=$scope.owners[j];
+                                    $scope.ownerdbid = $scope.owners[j]._id;
+                                }
+                            }
+                        }
+                    }
+                    for(var k=0;k < $scope.tenants.length;k++)
+                    {
+                        if($scope.tenants[k].FLAT_NO === inputsearch)
+                        {
+                            $scope.t=$scope.tenants[k];
+                            $scope.tenantdbid = $scope.tenants[k]._id;
+                        }
+                    }
+                }
+            }
                      
             $scope.getDetails = function() {
-      //          console.log("adi");
+                console.log("adi");
                 DataService.getAllFlatsData().then(
                     $scope.getAllFlatsDataSuccessHandler
                 );
@@ -274,16 +330,16 @@
             $scope.getAllMonthsDataSuccessHandler = function(response)
             {
                 $scope.grid=response.data.flats;    
-        //        console.log($scope.grid);
-          //      console.log("nnn");
+                console.log($scope.grid);
+                console.log("nnn");
                 $scope.z++;
                 $scope.sendDate($scope.mymonth,$scope.myyear);
             }
             $scope.getAllFlatsDataSuccessHandler = function(response)
             {
-    //            console.log(response);
+                console.log(response);
                 $scope.flatnos=response.data.flats;
-      //          console.log("jkjkjj");
+                console.log("jkjkjj");
               //  $scope.sendDate($scope.mymonth,$scope.myyear);
                 
             }
@@ -315,7 +371,39 @@
                     .success(function (response) { $scope.emailcontent=response.docs; });
             }
                     
+
+            $scope.firstFunction = function()
+            {
+                for(var i=0; i<$scope.tenants.length ;i++)
+                {
+                    if($scope.tenants[i].FIRST_NAME === "" && $scope.tenants[i].MIDDLE_NAME === "" && $scope.tenants[i].LAST_NAME === "" )
+                    {
+                        for(var j=0; j<$scope.owners.length ; j++)
+                        {
+                            if($scope.owners[j].ownedFlats === $scope.tenants[i].FLAT_NO)
+                            {
+                                $scope.myjson[i].FIRST_NAME = $scope.owners[j].FIRST_NAME;
+                                $scope.myjson[i].LAST_NAME = $scope.owners[j].LAST_NAME;
+                                $scope.myjson[i].MIDDLE_NAME = $scope.owners[j].MIDDLE_NAME;
+                                $scope.myjson[i].EMAIL_IDS = $scope.owners[j].EMAIL_IDS;
+                                $scope.myjson[i].PHONE_NUMBERS = $scope.owners[j].PHONE_NUMBERS;                                
+                            }
+                        }
+                        
+                    }
+                    
+                }
+            }
                                         
+            $http.get("/flatDetails")
+            .success(function (response) { $scope.flat = response.docs; });
+
+            $http.get("/tenantDetails")
+            .success(function (response) { $scope.tenants = response.docs;  $scope.myjson = response.docs;});
+        
+            $http.get("http://www.w3schools.com/angular/customers.php")
+            .success(function(response) {$scope.w3 = response.records;});
+
         });
 
         app.factory("DataService",function($http,$location){
@@ -323,15 +411,30 @@
             {
                 getAllFlatsData :function()
                 {
-        //            console.log("first");
+                    console.log("first");
                     return $http.get('/getFlats');
                 },
                 getAllMonthsData :function(month,selectedyear)
                 {
-//                    console.log(selectedyear);
+                    console.log(selectedyear);
                                     
                     return $http.get('/sendstatus/'+month+'/'+selectedyear);
-                },                            
+                },                
+                getOwnersData : function()
+                {
+                    console.log("FIRST");
+            	   return $http.get('/ownerDetails');
+                },
+                getFlatsData : function()
+                {
+                    return $http.get('/flatDetails');
+                },
+                getTenantsData : function()
+                {
+                    console.log("ll");
+                    return $http.get('/tenantDetails');
+                },
+            
             }
             
             return _getDataService;
