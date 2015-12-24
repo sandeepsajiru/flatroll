@@ -330,7 +330,7 @@ app.get('/sendMail/:flats',function(req,res){
                         var mailOptions = 
                         {
                             from: 'samplebz1@gmail.com',
-                            to: 'johnnikhil95@gmail.com ', 
+                            to: mail, 
                             subject: 'Reminder',
                             text: 'Dear Sir/Madam, \n\n This is a gentle reminder that you have not yet paid the maintenance for the month of '+ months+' ' +'('+year+')'+'. \n\n Please pay it as soon as possible. \n\n Regards \n '
                         }
