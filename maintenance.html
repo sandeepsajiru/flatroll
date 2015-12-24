@@ -50,7 +50,7 @@
       </style>
   </head>
   <body  >
-    <div ng-app="myApp" ng-controller="customersCtrl" ng-init="getDetails();getMonthlyDetails(mymonth,myyear)">
+    <div ng-app="myApp" ng-controller="customersCtrl" ng-init="getDetails();getMonthlyDetails(mymonth,myyear);getCredentials()">
               <nav class="navbar navbar-inverse">
             <div class="container-fluid" >
                 <div class="navbar-header ">
@@ -71,8 +71,12 @@
                         <li class="active"><a href="">Maintenance</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                        <li>     <a class="md-icon-button md-accent" aria-label="Favorite" data-toggle="modal" data-target="#credentialModal" data-whatever="@mdo">
+                                            <span class="glyphicon glyphicon-log-in"></span> Login
+                                            <md-tooltip> Change credentails</md-tooltip>
+                            </a>
+                        </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -121,6 +125,7 @@
                             </md-grid-list>
                     </div>
           
+        
           <div class="modal fade" id="mailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -129,7 +134,11 @@
                                 <h4 class="modal-title" id="exampleModalLabel">EMAIL TEMPLATE</h4>
                         </div>
                         <div class="modal-body">
+                            <div ng-show="{{authentication}}">
                             <form>
+                                <div class="form-group">
+                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.USER_NAME}}</label>
+                                </div>                                
                                 <h3>Hello,<br>
 
                                     This is a gentle reminder that you have not yet paid the maintenance <br>
@@ -141,13 +150,55 @@
                                 </h3>
                             </form>
                         </div>
+                            <div ng-hide="{{authentication}}">
+          <div class="form-group">
+            <label for="enteredpassword" class="control-label">Password :</label>
+            <input type="password" class="form-control" ng-model="enteredpassword">
+          </div>                                
+                                </div>
+                            </div>
                         <div class="modal-footer">
+                            <div ng-show="{{authentication}}">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="sendmails()">Send Mails</button>
+                                </div>
+                            <div ng-hide="{{authentication}}">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        
+            <div class="modal fade" id="credentialModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Credentials</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="u.USER_NAME" class="control-label">User Name:</label>
+            <input type="text" class="form-control" ng-model="u.USER_NAME">
+          </div>
+          <div class="form-group">
+            <label for="u.PASSWORD" class="control-label">Password :</label>
+            <input type="password" class="form-control" ng-model="u.PASSWORD">
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getCredentials()">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateCredentials(u.USER_NAME,u.PASSWORD)">Save Credentials</button>
+      </div>
+    </div>
+  </div>
+</div>
+        
       </div>
       <script>
       var app = angular.module('myApp', ['ngMaterial']);
@@ -159,7 +210,7 @@
             var previousMonth = new Date($scope.date);
             var previousYear = new Date($scope.date);
             $scope.dateEditorEnabled = false;
-            
+            $scope.u;
             $scope.emailcontent="";
     
             var start = 2010;
@@ -189,6 +240,15 @@
                     {id: '12', name: 'December'}
             ];        
             $scope.mymonth=$scope.months[$scope.m-1].name;
+            $scope.authentication = 0;
+            $scope.passwordvalidation = function(pass)
+            {
+                var request= {
+                    pass : pass
+                };
+                $http.put('URL',request).success(function (response) { $scope.authentication=$scope.docs;});
+                console.log($scope.authentication);
+            }
             $scope.getcolor = function(x)
             {
                 if(x.status == 1)
@@ -196,50 +256,47 @@
                 else 
                     return 'red';
             }
+            $scope.updateCredentials = function(USER_NAME,PASSWORD)
+            {
+                var request= {
+                    pass : $scope.u.PASSWORD,
+                    username : $scope.u.USER_NAME
+                };
+                $http.put('/auth',request);
+            }
             $scope.formarray = function(month,selectedyear)
             {
-            //    console.log("HELO");
                 for(var i=0;  i< $scope.flatnos.length ; i++)
                 {
                     $scope.flatnos[i].status='red';
                     for(j=0;j< $scope.grid.length;j++)
                     {
-               //         console.log($scope.flatnos[i].FLAT_NO);
                         $scope.grid[j].flatNo = angular.uppercase($scope.grid[j].flatNo);
-                 //       console.log($scope.grid[j].flatNo);
                         if($scope.flatnos[i].FLAT_NO === $scope.grid[j].flatNo && $scope.grid[j].complete!="1")
                         {
                             $scope.grid[j].complete = 1;
-                   //         console.log($scope.flatnos[i].FLAT_NO);
                             $scope.flatnos[i].status='green';
                             break;
                         }
                     }
                 }
-                //console.log("okay");
                 $scope.visible=true;
             }
             $scope.z="0";
             $scope.sendDate = function(month,selectedyear)
             {
-            //    console.log(month);
-              //  console.log(selectedyear);
                 if($scope.z!="0")
                 {
                     $scope.formarray(month,selectedyear);
-                //    console.log("bye");
                 }
-                
-//                console.log($scope.z);
             }
   
             $scope.mails = function(flatno)
             {
-                return $http.get("/sendMail/"+flatno).success(function (response) { });
+                return $http.get("/sendMail/"+flatno).success(function (response) { $scope.j=$scope.docs;});
             }            
             $scope.sendmails = function()
             {
-  //              console.log("Succes");
                 $scope.maillist=[];
                 for(var i=0; i<$scope.flatnos.length ; i++)
                 {
@@ -251,12 +308,16 @@
                     }
                 }
                             $scope.mails($scope.maillist);
-                            //console.log($scope.maillist);
+                            console.log($scope.maillist);
             }
 
-                     
+            $scope.getCredentials = function()
+            {
+                $http.get("/URL")
+                    .success(function (response) { $scope.u=response.docs; });                
+            }
+            
             $scope.getDetails = function() {
-      //          console.log("adi");
                 DataService.getAllFlatsData().then(
                     $scope.getAllFlatsDataSuccessHandler
                 );
@@ -274,17 +335,12 @@
             $scope.getAllMonthsDataSuccessHandler = function(response)
             {
                 $scope.grid=response.data.flats;    
-        //        console.log($scope.grid);
-          //      console.log("nnn");
                 $scope.z++;
                 $scope.sendDate($scope.mymonth,$scope.myyear);
             }
             $scope.getAllFlatsDataSuccessHandler = function(response)
             {
-    //            console.log(response);
                 $scope.flatnos=response.data.flats;
-      //          console.log("jkjkjj");
-              //  $scope.sendDate($scope.mymonth,$scope.myyear);
                 
             }
             
@@ -323,13 +379,10 @@
             {
                 getAllFlatsData :function()
                 {
-        //            console.log("first");
                     return $http.get('/getFlats');
                 },
                 getAllMonthsData :function(month,selectedyear)
                 {
-//                    console.log(selectedyear);
-                                    
                     return $http.get('/sendstatus/'+month+'/'+selectedyear);
                 },                            
             }
@@ -339,4 +392,3 @@
     </script>
 </body>
 </html>
-    
