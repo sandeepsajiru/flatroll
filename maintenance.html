@@ -50,7 +50,7 @@
       </style>
   </head>
   <body  >
-    <div ng-app="myApp" ng-controller="customersCtrl" ng-init="getDetails();getMonthlyDetails(mymonth,myyear);getCredentials()">
+    <div ng-app="myApp" ng-controller="customersCtrl" ng-init="getDetails();getMonthlyDetails(mymonth,myyear);getCredentials();init()">
               <nav class="navbar navbar-inverse">
             <div class="container-fluid" >
                 <div class="navbar-header ">
@@ -133,8 +133,8 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="exampleModalLabel">EMAIL TEMPLATE</h4>
                         </div>
-                        <div class="modal-body">
-                            <div ng-show="{{authentication}}">
+                        <div ng-show="visibleSender">
+                        <div class="modal-body" >
                             <form>
                                 <div class="form-group">
                                     <label for="u.USER_NAME" class="control-label">User Name: {{u.USER_NAME}}</label>
@@ -149,27 +149,36 @@
                                     Heads <br>                       
                                 </h3>
                             </form>
-                        </div>
-                            <div ng-hide="{{authentication}}">
-          <div class="form-group">
-            <label for="enteredpassword" class="control-label">Password :</label>
-            <input type="password" class="form-control" ng-model="enteredpassword">
-          </div>                                
-                                </div>
+                        
                             </div>
                         <div class="modal-footer">
-                            <div ng-show="{{authentication}}">
+
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="sendmails()">Send Mails</button>
+                                
+                        </div>
+                    </div>
+                        <div ng-hide="visibleSender">
+                        <div class="modal-body" >
+                                                    
+          <div class="form-group">
+            <label for="enteredpassword" class="control-label">Password :</label>
+            <input type="text" class="form-control" ng-model="enteredpassword">
+          </div>                                
                                 </div>
-                            <div ng-hide="{{authentication}}">
+
+                            
+                        <div class="modal-footer">
+                                 
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
                             </div>
+
+                            </div>
+                        </div>
                         </div>
                     </div>
-                </div>
-            </div>
+        
         
             <div class="modal fade" id="credentialModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog" role="document">
@@ -240,15 +249,6 @@
                     {id: '12', name: 'December'}
             ];        
             $scope.mymonth=$scope.months[$scope.m-1].name;
-            $scope.authentication = 0;
-            $scope.passwordvalidation = function(pass)
-            {
-                var request= {
-                    pass : pass
-                };
-                $http.put('URL',request).success(function (response) { $scope.authentication=$scope.docs;});
-                console.log($scope.authentication);
-            }
             $scope.getcolor = function(x)
             {
                 if(x.status == 1)
@@ -311,16 +311,41 @@
                             console.log($scope.maillist);
             }
 
-            $scope.getCredentials = function()
+            /*$scope.getCredentials = function()
             {
-                $http.get("/URL")
+                $http.get("/auth")
                     .success(function (response) { $scope.u=response.docs; });                
+            }*/
+            $scope.init = function()
+            {
+                $scope.authentication = 0;
             }
+            $scope.passwordvalidation = function(pass)
+            {
+                /*var request= {
+                    pass : pass
+                };*/
+                console.log("hie");
+                console.log(pass);
+                DataService.getPasswordValidate(pass).then(
+                    $scope.getPasswordDataSuccessHandler
+                    );
+            }   
             
             $scope.getDetails = function() {
                 DataService.getAllFlatsData().then(
                     $scope.getAllFlatsDataSuccessHandler
                 );
+            }
+            $scope.getPasswordDataSuccessHandler = function(response)
+            {
+                console.log(response.data);
+                $scope.authentication=response.data;
+                console.log($scope.authentication);
+                if($scope.authentication == 0)
+                    $scope.visibleSender = false;
+                else if($scope.authentication == 1)
+                    $scope.visibleSender = true;
             }
             $scope.getMonthlyDetails= function (month,year)
             {
@@ -384,7 +409,12 @@
                 getAllMonthsData :function(month,selectedyear)
                 {
                     return $http.get('/sendstatus/'+month+'/'+selectedyear);
-                },                            
+                },
+                getPasswordValidate : function(pass)
+                {
+                    return $http.get('passauth/'+pass);
+                },
+           
             }
             
             return _getDataService;
