@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 var nodemailer = require('nodemailer');
 var prototypes = require('prototypes');
+var bcrypt = require('bcrypt-nodejs');
 // Mongoose import
 
 var mongoose = require('mongoose');
@@ -85,6 +86,11 @@ var settingsSchema = new Schema(
         CustomFields:['string'],
         CreatedOn:Date
     });
+var mailSchema = new Schema(
+    {
+        pass:'string',
+        username:'string'
+    });
 // Mongoose Model definition
 
 
@@ -97,6 +103,8 @@ var flats = mongoose.model('flat', flatSchema);
 var receipts = mongoose.model('receipt', receiptsSchema);
 
 var settings = mongoose.model('setting', settingsSchema);
+
+var mails = mongoose.model('mail', mailSchema);
 
 // Bootstrap express
 // Bootstrap express
@@ -179,7 +187,6 @@ app.put('/tenant/:id',(function(req,res){
       tenant[prop] = req.body[prop];
 	  console.log(req.body[prop]);
     }
-
     // save the tenant
     tenant.save(function(err) {
       if (err) {
@@ -190,11 +197,55 @@ app.put('/tenant/:id',(function(req,res){
       res.json({ message: 'tenant updated!' });
     });
   });
-  
 })); 
+
+app.put('/auth', function(req, res){
+    mails.findOne({},function(err, docs){
+        if (err) {
+      return res.send(err);
+    }
+        var prop;
+    for (prop in req.body) {
+        if(prop=='pass')
+        {
+            var hash = bcrypt.hashSync(req.body[prop]);
+            docs[prop] = hash;
+        }
+        else
+            docs[prop] = req.body[prop];
+    }
+        
+        docs.save(function(err){
+            if(err)
+                return res.send(err);
+            res.json({message: 'Email Updated'});
+            console.log(docs);
+        });
+});
+});
+var uipass;
+app.get('/passauth/:pass', function (req, res){
+    mails.findOne({},function(err, p){
+        if(bcrypt.compareSync(req.params.pass,p['pass'])==true){
+            console.log('Reached');
+            uipass=req.params.pass;
+           res.json(1);}
+        else
+        {
+            res.json(0);
+            console.log('screwed');
+        }
+    });
+});
+    
+app.get('/uid', function(req, res){
+    mails.findOne({},function(err, docs){
+        res.json(docs);
+    })
+});
+    
     
 app.post('/',function(req, res){
-
 		var Receipt = new receipts({
         flatNo : req.body.flatNo,
         receiptId : req.body.receiptId ,
@@ -242,15 +293,24 @@ app.get('/sendMail/:flats',function(req,res){
         var temp = flatnos[i]+flatnos[i+1]+flatnos[i+2]+flatnos[i+3];
         flats[j] = temp;
     }
-    var smtpTransport = nodemailer.createTransport("SMTP",{
+    var sendmail;
+    var smtpTransport;
+    mails.find({},{ username : 1 } , function(err,docs) {
+        sendmail = JSON.stringify(docs, ["username"]);
+        sendmail = sendmail.replace('[{"username":"','');
+        sendmail = sendmail.replace('"}]','');
+        sendmail = sendmail.replace(' ','');
+        smtpTransport = nodemailer.createTransport("SMTP",{
                             service: "Gmail",
                             auth: 
                             {
-                                user: "samplebz1@gmail.com",
-                                pass: "beingzero"
+                                user: sendmail,
+                                pass: uipass
                             }
                         });
-    for( var i=0;i<flats.length;i++)
+    });
+
+    for( var i=0;i<1;i++)
     {
         tenants.find
                 (
@@ -270,7 +330,7 @@ app.get('/sendMail/:flats',function(req,res){
                         var mailOptions = 
                         {
                             from: 'samplebz1@gmail.com',
-                            to: mail, 
+                            to: 'johnnikhil95@gmail.com ', 
                             subject: 'Reminder',
                             text: 'Dear Sir/Madam, \n\n This is a gentle reminder that you have not yet paid the maintenance for the month of '+ months+' ' +'('+year+')'+'. \n\n Please pay it as soon as possible. \n\n Regards \n '
                         }
@@ -286,7 +346,6 @@ app.get('/sendMail/:flats',function(req,res){
                     }
                 );  
     }
-    smtpTransport.close();
 });
 
 app.get('/getFlats',function(req,res){

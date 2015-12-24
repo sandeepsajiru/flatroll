@@ -137,7 +137,7 @@
                         <div class="modal-body" >
                             <form>
                                 <div class="form-group">
-                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.USER_NAME}}</label>
+                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.username}}</label>
                                 </div>                                
                                 <h3>Hello,<br>
 
@@ -153,7 +153,7 @@
                             </div>
                         <div class="modal-footer">
 
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="revokeAuth()">Cancel</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="sendmails()">Send Mails</button>
                                 
                         </div>
@@ -163,14 +163,14 @@
                                                     
           <div class="form-group">
             <label for="enteredpassword" class="control-label">Password :</label>
-            <input type="text" class="form-control" ng-model="enteredpassword">
+            <input type="password" class="form-control" ng-model="enteredpassword">
           </div>                                
                                 </div>
 
                             
                         <div class="modal-footer">
                                  
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cleartext()">Cancel</button>
                             <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
                             </div>
 
@@ -295,6 +295,18 @@
             {
                 return $http.get("/sendMail/"+flatno).success(function (response) { $scope.j=$scope.docs;});
             }            
+            
+            $scope.revokeAuth = function()
+            {
+                $scope.enteredpassword=null;
+                $scope.authentication=0;
+                $scope.visibleSender=false;
+            }
+            
+            $scope.cleartext = function(){
+                $scope.enteredpassword=null;
+            }
+            
             $scope.sendmails = function()
             {
                 $scope.maillist=[];
@@ -309,13 +321,15 @@
                 }
                             $scope.mails($scope.maillist);
                             console.log($scope.maillist);
+                $scope.authentication=0;
+                $scope.visibleSender=false;
             }
 
-            /*$scope.getCredentials = function()
+            $scope.getCredentials = function()
             {
-                $http.get("/auth")
-                    .success(function (response) { $scope.u=response.docs; });                
-            }*/
+                $http.get("/uid")
+                    .success(function (response) { $scope.u=response; console.log($scope.u)});                
+            }
             $scope.init = function()
             {
                 $scope.authentication = 0;
@@ -330,6 +344,8 @@
                 DataService.getPasswordValidate(pass).then(
                     $scope.getPasswordDataSuccessHandler
                     );
+                $scope.enteredpassword=null;
+                
             }   
             
             $scope.getDetails = function() {
