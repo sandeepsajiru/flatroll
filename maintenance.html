@@ -137,25 +137,36 @@
                         <div class="modal-body" >
                             <form>
                                 <div class="form-group">
-                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.username}}</label>
+                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.USER_NAME}}</label>
                                 </div>                                
-                                <h3>Hello,<br>
-
-                                    This is a gentle reminder that you have not yet paid the maintenance <br>
-
-                                    Please pay it as soon as possible <br>
-
-                                    Regards <br>
-                                    Heads <br>                       
+                                
+                                                <label for="comment"> Body : </label>
+                                
+                                    <div class="pull-right btn-group btn-group-xs">
+                                                <button type="button" class="btn btn-info" ng-click="toggleSelection()">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    </button>
+                                    </div>
+                                <h3>
+                <div ng-show="showemailtext">
+  <textarea class="form-control" rows="10" columns="10" placeholder="body of the email" ng-model="emailcontent" value="emailcontent"></textarea>
+                    </div>
+                        <div ng-hide="showemailtext">
+                            {{emailcontent}}
+                            </div>
                                 </h3>
                             </form>
                         
                             </div>
                         <div class="modal-footer">
-
-                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="revokeAuth()">Cancel</button>
+                            <div ng-show="showemailtext">
+                            <button type="button" class="btn btn-primary" ng-click="toggleSelection();putMailcontent();">Save </button>    
+                                </div>
+                            <div ng-hide="showemailtext">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="sendmails()">Send Mails</button>
-                                
+                            
+                            </div>
                         </div>
                     </div>
                         <div ng-hide="visibleSender">
@@ -163,15 +174,15 @@
                                                     
           <div class="form-group">
             <label for="enteredpassword" class="control-label">Password :</label>
-            <input type="password" class="form-control" ng-model="enteredpassword">
+            <input type="text" class="form-control" ng-model="enteredpassword" ng-click="passwordvalidation(enteredpassword)" ng-enter="passwordvalidation(enteredpassword)">
           </div>                                
                                 </div>
 
                             
                         <div class="modal-footer">
                                  
-                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cleartext()">Cancel</button>
-                            <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary"  ng-enter="passwordvalidation(enteredpassword)" ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
                             </div>
 
                             </div>
@@ -256,6 +267,18 @@
                 else 
                     return 'red';
             }
+            $scope.showemailtext = false;
+            $scope.putMailcontent = function()
+            {
+                var request = {
+                    message : $scope.emailcontent
+                };
+                $http.put('/url',request);
+            }
+            $scope.toggleSelection = function()
+            {
+                $scope.showemailtext = !$scope.showemailtext;
+            }
             $scope.updateCredentials = function(USER_NAME,PASSWORD)
             {
                 var request= {
@@ -295,18 +318,6 @@
             {
                 return $http.get("/sendMail/"+flatno).success(function (response) { $scope.j=$scope.docs;});
             }            
-            
-            $scope.revokeAuth = function()
-            {
-                $scope.enteredpassword=null;
-                $scope.authentication=0;
-                $scope.visibleSender=false;
-            }
-            
-            $scope.cleartext = function(){
-                $scope.enteredpassword=null;
-            }
-            
             $scope.sendmails = function()
             {
                 $scope.maillist=[];
@@ -321,15 +332,13 @@
                 }
                             $scope.mails($scope.maillist);
                             console.log($scope.maillist);
-                $scope.authentication=0;
-                $scope.visibleSender=false;
             }
 
-            $scope.getCredentials = function()
+            /*$scope.getCredentials = function()
             {
-                $http.get("/uid")
-                    .success(function (response) { $scope.u=response; console.log($scope.u)});                
-            }
+                $http.get("/auth")
+                    .success(function (response) { $scope.u=response.docs; });                
+            }*/
             $scope.init = function()
             {
                 $scope.authentication = 0;
@@ -344,8 +353,9 @@
                 DataService.getPasswordValidate(pass).then(
                     $scope.getPasswordDataSuccessHandler
                     );
-                $scope.enteredpassword=null;
-                
+                DataService.getMailContent($scope.emailcontent).then(
+                    $scope.getMailContentSuccessHandler
+                    );
             }   
             
             $scope.getDetails = function() {
@@ -362,6 +372,11 @@
                     $scope.visibleSender = false;
                 else if($scope.authentication == 1)
                     $scope.visibleSender = true;
+            }
+            $scope.getMailContentSuccessHandler = function()
+            {
+                $scope.emailcontent =response.data;
+                console.log($scope.emailcontent);
             }
             $scope.getMonthlyDetails= function (month,year)
             {
@@ -406,11 +421,11 @@
                 }
             }
                         
-            $scope.sendEmailTemplate = function()
+            /*$scope.sendEmailTemplate = function()
             {
                 $http.get("/email")
                     .success(function (response) { $scope.emailcontent=response.docs; });
-            }
+            }*/
                     
                                         
         });
@@ -429,6 +444,10 @@
                 getPasswordValidate : function(pass)
                 {
                     return $http.get('passauth/'+pass);
+                },
+                getMailContent :function(message)
+                {
+                    return $http.get('URL/'+message);
                 },
            
             }
