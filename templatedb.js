@@ -1,0 +1,1 @@
+db.emailtemplates.insert({body:''});
