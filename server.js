@@ -14,7 +14,6 @@ mongoose.connect('mongodb://localhost/flatroll', function (error) {
     if (error) {
         console.log(error);
     }
-
 });
 
 // Mongoose Schema definition
@@ -93,6 +92,10 @@ var mailSchema = new Schema(
     });
 // Mongoose Model definition
 
+var emailSchema = new Schema(
+    {
+        body:'string'
+    });
 
 var tenants = mongoose.model('tenant', tenantSchema);
 
@@ -105,6 +108,8 @@ var receipts = mongoose.model('receipt', receiptsSchema);
 var settings = mongoose.model('setting', settingsSchema);
 
 var mails = mongoose.model('mail', mailSchema);
+
+var emailtemplates =  mongoose.model('emailtemplate',emailSchema);
 
 // Bootstrap express
 // Bootstrap express
@@ -224,11 +229,11 @@ app.put('/auth', function(req, res){
 });
 });
 var uipass;
-app.get('/passauth/:pass', function (req, res){
+app.put('/passauth', function (req, res){
     mails.findOne({},function(err, p){
-        if(bcrypt.compareSync(req.params.pass,p['pass'])==true){
+        if(bcrypt.compareSync(req.body['pass'],p['pass'])==true){
             console.log('Reached');
-            uipass=req.params.pass;
+            uipass=req.body['pass'];
            res.json(1);}
         else
         {
@@ -284,6 +289,30 @@ app.get('/ownerDetails', function (req, res) {
         res.json({ docs: docs });
     });
 });
+
+var msgtemp;    
+
+app.get('/getTemplate', function(req, res){
+    emailtemplates.findOne({},{body:1,_id:0}, function(err, docs){
+        msgtemp = JSON.stringify(docs, ["body"]);
+        msgtemp = msgtemp.replace('{"body":"','');
+        msgtemp = msgtemp.replace('"}','');
+        console.log(msgtemp);
+       res.json(msgtemp); 
+    });
+});
+
+app.put('/putTemplate', function(req, res){
+    emailtemplates.findOne({},function(err, docs){
+        docs['body'] = req.body['body'];    
+        docs.save(function(err){
+            if(err)
+                return res.send(err);
+            res.json({message: 'Email Template Updated'});
+            console.log(docs);
+        });
+    });
+});
     
 app.get('/sendMail/:flats',function(req,res){
     
@@ -332,7 +361,7 @@ app.get('/sendMail/:flats',function(req,res){
                             from: 'samplebz1@gmail.com',
                             to: mail, 
                             subject: 'Reminder',
-                            text: 'Dear Sir/Madam, \n\n This is a gentle reminder that you have not yet paid the maintenance for the month of '+ months+' ' +'('+year+')'+'. \n\n Please pay it as soon as possible. \n\n Regards \n '
+                            text: msgtemp
                         }
                         smtpTransport.sendMail(mailOptions, function(error, response){
                             if(error){

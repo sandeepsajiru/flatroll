@@ -137,7 +137,7 @@
                         <div class="modal-body" >
                             <form>
                                 <div class="form-group">
-                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.USER_NAME}}</label>
+                                    <label for="u.USER_NAME" class="control-label">User Name: {{u.username}}</label>
                                 </div>                                
                                 
                                                 <label for="comment"> Body : </label>
@@ -163,7 +163,7 @@
                             <button type="button" class="btn btn-primary" ng-click="toggleSelection();putMailcontent();">Save </button>    
                                 </div>
                             <div ng-hide="showemailtext">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="revokeAuth()">Cancel</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="sendmails()">Send Mails</button>
                             
                             </div>
@@ -182,7 +182,7 @@
                             
                         <div class="modal-footer">
                                  
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cleartext()">Cancel</button>
                             <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
                             </div>
 
@@ -280,9 +280,9 @@
             $scope.putMailcontent = function()
             {
                 var request = {
-                    message : $scope.emailcontent
+                    body : $scope.emailcontent
                 };
-                $http.put('/url',request);
+                $http.put('/putTemplate',request);
             }
             $scope.toggleSelection = function()
             {
@@ -295,6 +295,8 @@
                     username : $scope.u.USER_NAME
                 };
                 $http.put('/auth',request);
+                $http.get("/uid")
+                    .success(function (response) { $scope.u=response; console.log($scope.u)});
             }
             $scope.formarray = function(month,selectedyear)
             {
@@ -326,7 +328,19 @@
             $scope.mails = function(flatno)
             {
                 return $http.get("/sendMail/"+flatno).success(function (response) { $scope.j=$scope.docs;});
-            }            
+            }  
+            
+            $scope.revokeAuth = function()
+            {
+                $scope.enteredpassword=null;
+                $scope.authentication=0;
+                $scope.visibleSender=false;
+            }
+            
+            $scope.cleartext = function(){
+                $scope.enteredpassword=null;
+            }
+            
             $scope.sendmails = function()
             {
                 $scope.maillist=[];
@@ -341,13 +355,15 @@
                 }
                             $scope.mails($scope.maillist);
                             console.log($scope.maillist);
+            $scope.authentication=0;
+                $scope.visibleSender=false;
             }
 
-            /*$scope.getCredentials = function()
+            $scope.getCredentials = function()
             {
-                $http.get("/auth")
-                    .success(function (response) { $scope.u=response.docs; });                
-            }*/
+                $http.get("/uid")
+                    .success(function (response) { $scope.u=response; console.log($scope.u)});                
+            }
             $scope.init = function()
             {
                 $scope.authentication = 0;
@@ -362,6 +378,7 @@
                 DataService.getPasswordValidate(pass).then(
                     $scope.getPasswordDataSuccessHandler
                     );
+                $scope.enteredpassword=null;
                 DataService.getMailContent($scope.emailcontent).then(
                     $scope.getMailContentSuccessHandler
                     );
@@ -382,9 +399,9 @@
                 else if($scope.authentication == 1)
                     $scope.visibleSender = true;
             }
-            $scope.getMailContentSuccessHandler = function()
+            $scope.getMailContentSuccessHandler = function(response)
             {
-                $scope.emailcontent =response.data;
+                $scope.emailcontent = response.data;
                 console.log($scope.emailcontent);
             }
             $scope.getMonthlyDetails= function (month,year)
@@ -452,11 +469,14 @@
                 },
                 getPasswordValidate : function(pass)
                 {
-                    return $http.get('passauth/'+pass);
+                    var request = {
+                    pass : pass
+                };
+                    return $http.put('passauth/', request);
                 },
                 getMailContent :function(message)
                 {
-                    return $http.get('URL/'+message);
+                    return $http.get('/getTemplate');
                 },
            
             }
