@@ -96,8 +96,11 @@
                                                 <select  ng-model="selectedyear"  id="year" ></select>
     
                                             <label>Month</label>
-                                                <select  ng-model="selectedmonth"  ng-click="selectedmonth!=NULL && getMonthlyDetails(selectedmonth,selectedyear)">
-                                                <option ng-repeat="option in months"  value="{{option.name}}">{{option.name}}</option>
+                                                <select  ng-model="mymonth"  
+													ng-options="option.name for option in months"
+													ng-click="selectedmonth!=NULL && getMonthlyDetails(selectedmonth,selectedyear)">
+                                                <!--option ng-repeat="option in months"  value="{{option.name}}">{{option.name}}</option -->
+												
             
                                                 </select>    
     
@@ -235,14 +238,19 @@
             $scope.emailcontent="";
     
             var start = 2010;
-            $scope.end = new Date().getFullYear();
+            $scope.end = new Date().getFullYear()+2;
+			$scope.currentYear = new Date().getFullYear();
             var e=$scope.end;
-            $scope.myyear=$scope.end;
-            $scope.selectedyear=$scope.end;
+            $scope.myyear=$scope.currentYear;
+            $scope.selectedyear=$scope.currentYear;
+			
             var options = "";
             for(var year = $scope.end ; year >=start; year--)
             {
-                options += "<option>"+ year +"</option>";
+				if(year === $scope.currentYear)
+					options += "<option selected>"+ year +"</option>";
+                else
+					options += "<option>"+ year +"</option>";
             }
             $scope.m=new Date().getMonth()+1;
             document.getElementById("year").innerHTML = options;            
