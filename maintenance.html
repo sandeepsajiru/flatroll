@@ -91,9 +91,12 @@
               
                               <div class="row">
                                     <div class="col-sm-11 col-md-11">                  
-                                        <div ng-init="selectedyear=end;month.name=years[m-1];month.id=m;">
+                                        <div ng-init="month.name=years[m-1];month.id=m;">
                                             <label>Year</label>
-                                                <select  ng-model="selectedyear"  id="year" ></select>
+                                                <select  ng-model="selectedyear">
+                                            <option ng-repeat = "c in choice" value = "{{c}}">{{c}}</option>
+                                            
+                                            </select>
     
                                             <label>Month</label>
                                                 <select  ng-model="selectedmonth"  ng-click="selectedmonth!=NULL && getMonthlyDetails(selectedmonth,selectedyear)">
@@ -240,13 +243,17 @@
             var e=$scope.end;
             $scope.myyear=$scope.end;
             $scope.selectedyear=$scope.currentYear;
+            console.log($scope.selectedyear);
             var options = "";
-            for(var year = $scope.end ; year >=start; year--)
+            $scope.choice=[];
+            for(var year=$scope.end ; year >=start;year--)
             {
-                options += "<option>"+ year +"</option>";
+                $scope.choice.push(year);
+            
             }
+            console.log($scope.choice);
             $scope.m=new Date().getMonth()+1;
-            document.getElementById("year").innerHTML = options;            
+            //document.getElementById("year").innerHTML = options;            
             $scope.months=[
                     {id: '1', name: 'January'},
                     {id: '2', name: 'February'},
@@ -261,6 +268,8 @@
                     {id: '11', name: 'November'},
                     {id: '12', name: 'December'}
             ];        
+            $scope.selectedmonth =$scope.months[$scope.m-1].name;
+            
             $scope.mymonth=$scope.months[$scope.m-1].name;
             $scope.getcolor = function(x)
             {
