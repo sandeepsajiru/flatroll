@@ -93,7 +93,7 @@
                                     <div class="col-sm-11 col-md-11">                  
                                         <div ng-init="month.name=years[m-1];month.id=m;">
                                             <label>Year</label>
-                                                <select  ng-model="selectedyear">
+                                                <select  ng-model="selectedyear" ng-click="selectedmonth!=NULL && getMonthlyDetails(selectedmonth,selectedyear)">
                                             <option ng-repeat = "c in choice" value = "{{c}}">{{c}}</option>
                                             
                                             </select>
