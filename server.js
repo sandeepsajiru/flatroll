@@ -406,7 +406,7 @@ app.get('/sendstatus/:month/:year',function(req,res){
 });
     
 app.get('/monthlystatus/:flat/:year', function(req, res){
-    receipts.find({flatNo : req.params.flat, year : req.params.year, paymentTyp: 'Maintenance'}, {months : 1}, function(err, docs){
+    receipts.find({flatNo : req.params.flat, year : req.params.year, paymentTyp: 'Montly Maintenance'}, {months : 1}, function(err, docs){
                     res.json(docs);
             }
                  );

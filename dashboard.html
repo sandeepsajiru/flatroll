@@ -433,6 +433,7 @@ Occupation :
             $scope.t="";
             $scope.o="";
             $scope.f="";
+            $scope.obj = [status:[],month:[]];
     
             $scope.altersidenav = function()
             {
@@ -584,9 +585,9 @@ Occupation :
             
             $scope.duestatusfn = function(dueflatnumber,selectedyear)
             {
-                $http.get("/monthlyStatus/", {
-                    params: { flatNumber:dueflatnumber,year:selectedyear }    
-                }).success(function (response) { $scope.duesoftheyear = response.duestatus; });
+                $http.get("/monthlystatus/"+dueflatnumber+"/"+$scope.selectedyear    
+                ).success(function (response) { $scope.duesoftheyear = response; });
+                //console.log($scope.duesoftheyear);
                 
                 $scope.formarray();
             }
@@ -595,9 +596,9 @@ Occupation :
         
             $scope.formarray = function()
             {
-                for(var a=0;a<$scope.duesoftheyear;a++)
+                for(var a=0;a<12;a++)
                 {
-                    $scope.obj[a].status = $scope.duesoftheyear[a];
+                    $scope.obj[a].status = 1;//$scope.duesoftheyear[a];
                     $scope.obj[a].month = $scope.months[a];
                 }
             }
