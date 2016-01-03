@@ -243,7 +243,7 @@
             var e=$scope.end;
             $scope.myyear=$scope.end;
             $scope.selectedyear=$scope.currentYear;
-            console.log($scope.selectedyear);
+            //console.log($scope.selectedyear);
             var options = "";
             $scope.choice=[];
             for(var year=$scope.end ; year >=start;year--)
@@ -251,7 +251,7 @@
                 $scope.choice.push(year);
             
             }
-            console.log($scope.choice);
+            //console.log($scope.choice);
             $scope.m=new Date().getMonth()+1;
             //document.getElementById("year").innerHTML = options;            
             $scope.months=[
@@ -306,7 +306,7 @@
                 };
                 $http.put('/auth',request);
                 $http.get("/uid")
-                    .success(function (response) { $scope.u=response; console.log($scope.u)});
+                    .success(function (response) { $scope.u=response; //console.log($scope.u)});
             }
             $scope.formarray = function(month,selectedyear)
             {
@@ -358,13 +358,13 @@
                 {
                     if($scope.flatnos[i].status === "red")
                     {
-                            console.log("Succes");
+                           // console.log("Succes");
                             $scope.maillist.push($scope.flatnos[i].FLAT_NO);
 //                            $scope.mails($scope.flatnos[i].FLAT_NO);
                     }
                 }
                             $scope.mails($scope.maillist);
-                            console.log($scope.maillist);
+                           // console.log($scope.maillist);
             $scope.authentication=0;
                 $scope.visibleSender=false;
             }
@@ -372,7 +372,7 @@
             $scope.getCredentials = function()
             {
                 $http.get("/uid")
-                    .success(function (response) { $scope.u=response; console.log($scope.u)});                
+                    .success(function (response) { $scope.u=response; //console.log($scope.u)});                
             }
             $scope.init = function()
             {
@@ -383,8 +383,8 @@
                 /*var request= {
                     pass : pass
                 };*/
-                console.log("hie");
-                console.log(pass);
+                //console.log("hie");
+                //console.log(pass);
                 DataService.getPasswordValidate(pass).then(
                     $scope.getPasswordDataSuccessHandler
                     );
@@ -401,9 +401,9 @@
             }
             $scope.getPasswordDataSuccessHandler = function(response)
             {
-                console.log(response.data);
+                //console.log(response.data);
                 $scope.authentication=response.data;
-                console.log($scope.authentication);
+                //console.log($scope.authentication);
                 if($scope.authentication == 0)
                     $scope.visibleSender = false;
                 else if($scope.authentication == 1)
@@ -412,7 +412,7 @@
             $scope.getMailContentSuccessHandler = function(response)
             {
                 $scope.emailcontent = response.data;
-                console.log($scope.emailcontent);
+              //  console.log($scope.emailcontent);
             }
             $scope.getMonthlyDetails= function (month,year)
             {
