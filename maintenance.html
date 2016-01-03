@@ -306,7 +306,7 @@
                 };
                 $http.put('/auth',request);
                 $http.get("/uid")
-                    .success(function (response) { $scope.u=response; //console.log($scope.u)});
+                    .success(function (response) { $scope.u=response; });
             }
             $scope.formarray = function(month,selectedyear)
             {
@@ -372,7 +372,7 @@
             $scope.getCredentials = function()
             {
                 $http.get("/uid")
-                    .success(function (response) { $scope.u=response; //console.log($scope.u)});                
+                    .success(function (response) { $scope.u=response; });                
             }
             $scope.init = function()
             {
