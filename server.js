@@ -203,6 +203,25 @@ app.put('/tenant/:id',(function(req,res){
     });
   });
 })); 
+    
+app.put('/updateReceipt/:id', function(req, res){
+    receipts.findOne({_id : req.params.id}, function(err, receipt){
+        if (err) {
+      return res.send(err);
+    }
+       for(val in req.body){
+        receipt[val] = req.body[val];
+           console.log(req.body[val]);
+    }
+    receipt.save(function(err){
+        if(err){ 
+            console.log(err);
+            return res.send(err);
+               }
+        res.json({message: 'updated receipt'});
+    }); 
+    });
+});    
 
 app.put('/auth', function(req, res){
     mails.findOne({},function(err, docs){
@@ -247,6 +266,12 @@ app.get('/uid', function(req, res){
     mails.findOne({},function(err, docs){
         res.json(docs);
     })
+});
+    
+app.get('/editReceipt/:flatNo/:month', function(req, res){
+   receipts.findOne({flatNo : req.params.flatNo, months : {$in :[req.params.month]}}, function(err, docs){
+       res.json(docs);
+   }) 
 });
     
     
@@ -499,5 +524,41 @@ app.get('/maintenance', function (req, res) {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/dashboard.html');
 });
+    
+app.get('/homepage', function(req, res){
+    res.sendFile(__dirname + '/homepage.html');
+});
+    
+app.get('/pics/kv2.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv2.jpg');
+});
+
+app.get('/pics/kv3.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv3.jpg');
+});
+    
+app.get('/pics/kv4.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv4.jpg');
+});
+    
+app.get('/pics/kv5.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv5.jpg');
+});
+    
+app.get('/pics/kv6.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv6.jpg');
+});
+    
+app.get('/pics/kv7.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv7.jpg');
+});
+    
+app.get('/pics/kv8.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv8.jpg');
+});    
+    
+app.get('/pics/kv9.jpg', function(req, res){
+    res.sendFile(__dirname + '/pics/kv9.jpg');
+});    
 
 });
