@@ -268,8 +268,8 @@ app.get('/uid', function(req, res){
     })
 });
     
-app.get('/editReceipt/:flatNo/:month', function(req, res){
-   receipts.findOne({flatNo : req.params.flatNo, months : {$in :[req.params.month]}}, function(err, docs){
+app.get('/editReceipt/:flatNo/:month/:year', function(req, res){
+   receipts.findOne({flatNo : req.params.flatNo, months : {$in :[req.params.month]}, year: req.params.year}, function(err, docs){
        res.json(docs);
    }) 
 });
@@ -342,6 +342,7 @@ app.put('/putTemplate', function(req, res){
 app.get('/sendMail/:flats',function(req,res){
     
          var flatnos = req.params.flats;
+        console.log(flatnos);
         var flats = [];
     for( var i=0,j=0; i<flatnos.length ;i=i+5,j++){
         var temp = flatnos[i]+flatnos[i+1]+flatnos[i+2]+flatnos[i+3];
