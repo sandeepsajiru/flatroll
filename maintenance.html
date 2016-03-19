@@ -123,12 +123,67 @@
                             md-gutter="4px" md-gutter-gt-sm="2px" >
                                 <md-grid-tile ng-repeat="x in flatnos" 
                                     md-colspan-sm="1" 
-                                    ng-class="x.status">
+                                    ng-class="x.status" ng-click="editGridDetails(x.FLAT_NO,selectedyear,selectedmonth)" data-toggle="modal" data-target="#gridModal" data-whatever="@mdo">
+                                    
                                         {{x.FLAT_NO}} 
 </md-grid-tile>
                             </md-grid-list>
                     </div>
-          
+          <div class="modal fade" id="gridModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">OWNER DETAILS</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="e.flatNo" class="control-label">Flat No:</label>
+            <input type="text" class="form-control" ng-model="e.flatNo">
+          </div>
+           <div class="form-group">
+            <label for="e.receiptId" class="control-label">Receipt ID :</label>
+            <input type="text" class="form-control" ng-model="e.receiptId">
+          </div>
+          <div class="form-group">
+            <label for="e.amount" class="control-label">Amount:</label>
+            <input type="text" class="form-control" ng-model="e.amount">
+          </div>
+          <div class="form-group">
+            <label for="e.received" class="control-label">Received : </label>
+            <input type="text" class="form-control" ng-model="e.received">
+          </div>
+
+
+          <div class="form-group">
+              <div flex="100" flex-gt-sm="25" layout="row" >
+      <fieldset class="standard" flex>
+        <label>Months</label>
+        <div layout="row" layout-wrap flex>
+          <div flex="25" ng-repeat="item in months">
+            <md-checkbox  ng-click="toggle(item.name)" value="{{item.name}}" ng-checked="checked(item.name)">
+            {{item.name}} 
+            </md-checkbox>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+          </div>
+          <div class="form-group">
+            <label for="e.year" class="control-label">Year :</label>
+            <input type="text" class="form-control" ng-model="e.year">
+          </div>            
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getMonthlyDetails(selectedmonth,selectedyear);">Cancel</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="getMonthlyDetails(selectedmonth,selectedyear);saveGridDetails();">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
         
           <div class="modal fade" id="mailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
                 <div class="modal-dialog" role="document">
@@ -254,7 +309,6 @@
             }
             //console.log($scope.choice);
             $scope.m=new Date().getMonth()+1;
-            console.log($scope.m);
             //document.getElementById("year").innerHTML = options;            
             $scope.months=[
                     {id: '1', name: 'January'},
@@ -271,7 +325,8 @@
                     {id: '12', name: 'December'}
             ];        
             $scope.selectedmonth =$scope.months[$scope.m-1].name;
-            
+            $scope.selection = [];
+
             $scope.mymonth=$scope.months[$scope.m-1].name;
             $scope.getcolor = function(x)
             {
@@ -296,8 +351,24 @@
                 };
                 $http.put('/putTemplate',request);
             }
+            $scope.toggle=function(i)
+            {
+                console.log(i);
+                var idx = $scope.selection.indexOf(i);
+                // is currently selected
+                if (idx > -1) {
+                  $scope.selection.splice(idx, 1);
+                }
+
+                // is newly selected
+                else {
+                  $scope.selection.push(i);
+                }
+                console.log($scope.selection);                            
+            }
             $scope.toggleSelection = function()
             {
+            
                 $scope.showemailtext = !$scope.showemailtext;
             }
             $scope.updateCredentials = function(USER_NAME,PASSWORD)
@@ -360,13 +431,10 @@
                 {
                     if($scope.flatnos[i].status === "red")
                     {
-                           // console.log("Succes");
                             $scope.maillist.push($scope.flatnos[i].FLAT_NO);
-//                            $scope.mails($scope.flatnos[i].FLAT_NO);
                     }
                 }
                             $scope.mails($scope.maillist);
-                           // console.log($scope.maillist);
             $scope.authentication=0;
                 $scope.visibleSender=false;
             }
@@ -395,11 +463,47 @@
                     $scope.getMailContentSuccessHandler
                     );
             }   
-            
+            $scope.checked =function(i)     
+            {
+                for(var j=0;j<$scope.selection.length;j++)
+                    if($scope.selection[j]==i)
+                        return true;
+                return false;
+            }
             $scope.getDetails = function() {
                 DataService.getAllFlatsData().then(
                     $scope.getAllFlatsDataSuccessHandler
                 );
+            }
+            $scope.saveGridDetails=function()
+            {
+                    var data = {
+                    flatNo:$scope.e.flatNo,
+                    receiptId:$scope.e.receiptId ,
+                    amount:$scope.e.amount ,
+                    date:$scope.date ,
+                    paymentMode:$scope.e.paymentMode,
+                    paymentTyp:$scope.e.paymentTyp,
+                    remarks:$scope.e.remarks ,
+                    received:$scope.e.received ,
+                    year:$scope.e.year ,
+                    months:$scope.selection
+                    };
+                $http.put('updateReceipt/'+ $scope.e._id,data);
+
+            }
+            $scope.editGridDetails= function(flatno,month,year)
+            {
+                DataService.getEditGridDetails(flatno,month,year).then(
+                    $scope.getEditGridDetailsSuccessHandler
+                    );
+            }
+            $scope.getEditGridDetailsSuccessHandler = function(response)
+            {
+                $scope.e=response.data;
+                $scope.selection=[]
+                if($scope.e.months);
+                $scope.selection=$scope.e.months;
             }
             $scope.getPasswordDataSuccessHandler = function(response)
             {
@@ -458,13 +562,6 @@
                     }
                 }
             }
-                        
-            /*$scope.sendEmailTemplate = function()
-            {
-                $http.get("/email")
-                    .success(function (response) { $scope.emailcontent=response.docs; });
-            }*/
-                    
                                         
         });
 
@@ -489,6 +586,10 @@
                 getMailContent :function(message)
                 {
                     return $http.get('/getTemplate');
+                },
+                getEditGridDetails : function(flatno,year,month)
+                {
+                    return $http.get('/editReceipt/'+flatno+'/'+month+'/'+year);
                 },
            
             }

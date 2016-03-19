@@ -204,8 +204,8 @@ app.put('/tenant/:id',(function(req,res){
   });
 })); 
     
-app.put('/updateReceipt', function(req, res){
-    receipts.findOne({_id : req.body['_id']}, function(err, receipt){
+app.put('/updateReceipt/:id', function(req, res){
+    receipts.findOne({_id : req.params.id}, function(err, receipt){
         if (err) {
       return res.send(err);
     }

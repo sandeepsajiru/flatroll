@@ -162,7 +162,6 @@ body,td,th {
             <md-checkbox ng-model="radioname" ng-init="radioname=true">Occupant Name</md-checkbox>
             <md-checkbox ng-model="radiophonenumber" ng-init="radiophonenumber=true"> Phone Number</md-checkbox>
             <md-checkbox ng-model="radioemail" ng-init="radioemail=true">Email ID</md-checkbox>
-            <md-checkbox ng-model="radiodues" ng-init="radiodues=true">Dues</md-checkbox>
             <md-button class="md-raised" ng-click="altersidenav()">Close</md-button> 
                   </md-sidenav>
             <table class="table table-hover" style="width:100%">
@@ -178,7 +177,6 @@ body,td,th {
                         <th ng-show="radioemail">
                             <span class="glyphicon glyphicon-envelope"></span>
                             Email Id</th>
-                        <th ng-show="radiodues">Dues</th>
                     </tr>
                 </thead>
                 <tbody ng-repeat="x in myjson | orderBy:'FLAT_NO' " ng-click="getFlatDetails(x.FLAT_NO)" >
@@ -187,8 +185,6 @@ body,td,th {
                         <td ng-show="radioname">{{x.FIRST_NAME + " "+x.MIDDLE_NAME+ " "+x.LAST_NAME}}</td>
                         <td ng-show="radiophonenumber">{{x.PHONE_NUMBERS}}</td>
                         <td ng-show="radioemail">{{x.EMAIL_IDS}}</td>
-                        <td  style="background-color:red" width="1px" ng-show="x.dues==1 && radiodues"></td>
-                        <td  style="background-color:green" width="1px" ng-show="x.dues==0 && radiodues"></td>
                     </tr>
                 </tbody>
             </table>
