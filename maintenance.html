@@ -4,13 +4,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
     <meta name="viewport" content="initial-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Detail Page</title>
+    <title>Maintenance</title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="jquery.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -208,12 +207,29 @@
                                     </div>
                                 <h3>
                 <div ng-show="showemailtext">
+  
   <textarea class="form-control" rows="10" columns="10" placeholder="body of the email" ng-model="emailcontent" value="emailcontent"></textarea>
+  
                     </div>
-                        <div ng-hide="showemailtext">
-                            {{emailcontent}}
-                            </div>
                                 </h3>
+                        <div ng-hide="showemailtext">
+                            <h3><pre>{{emailcontent}}</pre></h3>
+            <hr>
+            <md-checkbox  ng-click="toggleDefaulters()" ng-checked="toggleDefaulter" >
+            Selective Email for Defaulters 
+            </md-checkbox>
+            <br>
+                            <div ng-if="showdefaulterTextbox">
+                                <md-input-container flex>
+                                    <label>Add defaulter Flatno: </label>
+                                  <input name="Add defaulter Flatno: " ng-model="defaulterflat" 
+                 required ng-pattern="/^[B-Db-d]{1}-[0-9]{2}$/" md-maxlength="4" >
+                                </md-input-container>
+                            <md-button class="md-raised md-primary" ng-click="addDefaulter(defaulterflat);defaulterflat = null;" ng-disabled="defaulterflat==''">Add</md-button>
+                                <h4>Defaulters:<hr>
+                                <p id="showdefaulters"></p></h4>
+                            </div>
+                            </div>
                             </form>
                         
                             </div>
@@ -426,17 +442,30 @@
             
             $scope.sendmails = function()
             {
-                $scope.maillist=[];
-                for(var i=0; i<$scope.flatnos.length ; i++)
-                {
-                    if($scope.flatnos[i].status === "red")
+                    $scope.maillist=[];
+                    for(var i=0; i<$scope.flatnos.length ; i++)
                     {
-                            $scope.maillist.push($scope.flatnos[i].FLAT_NO);
+                        var flag=0;                        
+                        if($scope.toggleDefaulter)
+                        {
+                            
+                            for(var j=0; j<$scope.defaulter.length;j++)                            
+                            if(angular.uppercase($scope.flatnos[i].FLAT_NO) == $scope.defaulter[j])
+                            {
+                                flag=1;
+                                break;
+                            }
+                        }
+                        if(flag==0 && $scope.flatnos[i].status === "red")
+                        {
+                                $scope.maillist.push($scope.flatnos[i].FLAT_NO);
+                        }
                     }
-                }
-                            $scope.mails($scope.maillist);
-            $scope.authentication=0;
-                $scope.visibleSender=false;
+                    console.log($scope.maillist);
+                    $scope.mails($scope.maillist);
+                    $scope.authentication=0;
+                    $scope.visibleSender=false;
+                
             }
 
             $scope.getCredentials = function()
@@ -447,6 +476,7 @@
             $scope.init = function()
             {
                 $scope.authentication = 0;
+                $scope.defaulterflat="";
             }
             $scope.passwordvalidation = function(pass)
             {
@@ -469,6 +499,30 @@
                     if($scope.selection[j]==i)
                         return true;
                 return false;
+            }
+            $scope.toggleDefaulter=true;
+            $scope.showdefaulterTextbox=true;
+            $scope.toggleDefaulters = function()
+            {                
+                $scope.toggleDefaulter=!$scope.toggleDefaulter;
+                $scope.showdefaulterTextbox=!$scope.showdefaulterTextbox;                
+                return $scope.toggleDefaulter;
+            }
+            $scope.defaulter=[];
+            $scope.addDefaulter = function(flatno)
+            {
+                var flag=0;
+                if(flatno!=null)
+                {
+                    flatno=angular.uppercase(flatno);
+                    for(var i=0;i<$scope.defaulter.length;i++)
+                        if(flatno==$scope.defaulter[i])
+                            flag=1;
+                    if(!flag)
+                        $scope.defaulter.push(flatno);
+                    console.log($scope.defaulter);
+                }
+                document.getElementById("showdefaulters").innerHTML=$scope.defaulter;
             }
             $scope.getDetails = function() {
                 DataService.getAllFlatsData().then(
@@ -501,8 +555,8 @@
             $scope.getEditGridDetailsSuccessHandler = function(response)
             {
                 $scope.e=response.data;
-                $scope.selection=[]
-                if($scope.e.months);
+                $scope.selection=[];
+                if($scope.e.months!=null)
                 $scope.selection=$scope.e.months;
             }
             $scope.getPasswordDataSuccessHandler = function(response)
