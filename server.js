@@ -4,6 +4,7 @@ var logger = require('morgan');
 var nodemailer = require('nodemailer');
 var prototypes = require('prototypes');
 var bcrypt = require('bcrypt-nodejs');
+var validator = require('validator');
 // Mongoose import
 
 var mongoose = require('mongoose');
@@ -363,9 +364,10 @@ app.get('/sendMail/:flats',function(req,res){
                                 pass: uipass
                             }
                         });
+        //console.log(flats.length);
     });
-
-    for( var i=0;i<1;i++)
+    
+    for( var i=0;i<flats.length;i++)
     {
         tenants.find
                 (
@@ -380,11 +382,11 @@ app.get('/sendMail/:flats',function(req,res){
                         mail = mail.replace('[{"EMAIL_IDS":"','');
                         mail = mail.replace('"}]','');
                         mail = mail.replace(' ','');
-                        if(mail.length>0&&mail.contains('@'))
+                        if(validator.isEmail(mail))
                         {
                         var mailOptions = 
                         {
-                            from: 'samplebz1@gmail.com',
+                            from: sendmail,
                             to: mail, 
                             subject: 'Reminder',
                             text: msgtemp
