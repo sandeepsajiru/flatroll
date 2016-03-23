@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/sandeepsajiru/flatroll#readme",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.1",
     "bower": "^1.5.3",
     "express": "^4.13.3",
@@ -25,8 +26,8 @@
     "mongoose": "^4.1.9",
     "morgan": "^1.6.1",
     "nodemailer": "0.7.1",
-    "sort-by": "^1.1.1",
     "prototypes": "1.1.0",
-    "bcrypt-nodejs": "0.0.3"
+    "sort-by": "^1.1.1",
+    "validator": "^5.1.0"
   }
 }
