@@ -100,7 +100,7 @@
                                             <label>Month</label>
                                                 <select  ng-model="selectedmonth"  ng-click="selectedmonth!=NULL && getMonthlyDetails(selectedmonth,selectedyear)" value="selectedmonth">
                                                         
-                                                <option ng-repeat="option in months"  >{{option.name}}</option>
+                                                <option ng-repeat="option in months"  ng-d>{{option.name}}</option>
             
                                                 </select>    
     
@@ -120,13 +120,23 @@
                             md-cols-sm="1" md-cols-md="1" md-cols-gt-md="30"
                             md-row-height-gt-md="1:1" md-row-height="4:3"
                             md-gutter="4px" md-gutter-gt-sm="2px" >
+                                
                                 <md-grid-tile ng-repeat="x in flatnos" 
                                     md-colspan-sm="1" 
-                                    ng-class="x.status" ng-click="editGridDetails(x.FLAT_NO,selectedyear,selectedmonth)" data-toggle="modal" data-target="#gridModal" data-whatever="@mdo">
-                                    
+                                    ng-class="x.status"  >
+                                    <span ng-if="x.status=='green'">
+                                        
+                                        <p ng-click="editGridDetails(x.FLAT_NO,selectedyear,selectedmonth)" data-toggle="modal" data-target="#gridModal" data-whatever="@mdo">
+                                            
+                                            {{x.FLAT_NO}} 
+                                        </p>
+                                    </span>
+                                    <span ng-if="x.status=='red'">
                                         {{x.FLAT_NO}} 
+                                    </span>
+                                     
 </md-grid-tile>
-                            </md-grid-list>
+                        </md-grid-list>
                     </div>
           <div class="modal fade" id="gridModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog" role="document">
@@ -139,6 +149,8 @@
         <form>
           <div class="form-group">
             <label for="e.flatNo" class="control-label">Flat No:</label>
+
+              
             <input type="text" class="form-control" ng-model="e.flatNo">
           </div>
            <div class="form-group">
@@ -160,9 +172,9 @@
       <fieldset class="standard" flex>
         <label>Months</label>
         <div layout="row" layout-wrap flex>
-          <div flex="25" ng-repeat="item in months">
-            <md-checkbox  ng-click="toggle(item.name)" value="{{item.name}}" ng-checked="checked(item.name)">
-            {{item.name}} 
+          <div flex="25" ng-repeat="item in e.months">
+            <md-checkbox  ng-click="toggle(item)" value="{{item}}" ng-checked="checked(item)">
+            {{item}} 
             </md-checkbox>
           </div>
         </div>
@@ -178,7 +190,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="getMonthlyDetails(selectedmonth,selectedyear);">Cancel</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="getMonthlyDetails(selectedmonth,selectedyear);saveGridDetails();">Submit</button>
+        <button type="button" class="btn btn-danger"  ng-click="deleteReciept()">Del Reciept</button>  
+
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveGridDetails();">Submit</button>
       </div>
     </div>
   </div>
@@ -220,14 +234,53 @@
             </md-checkbox>
             <br>
                             <div ng-if="showdefaulterTextbox">
+                                <!--
+                                <div class="form-group">              
+                                        <div class="row">
+                                            <div class="col-sm-1 col-md-1">
+                                            </div>
+                                            <div class="col-sm-10 col-md-10">                  
+                                                <div layout layout-sm="column">
+                                                        <md-input-container flex>
+                                                            <label>Add Defaulter Flatno: </label>
+                                                                <input name="Add defaulter Flatno: " ng-model="defaulterflat" required ng-pattern="/^[B-Db-d]{1}-[0-9]{2}$/" md-maxlength="4" >
+                                                       </md-input-container>
+                                                        <md-button class="md-raised md-primary" ng-click="addDefaulter(defaulterflat);defaulterflat = null;" ng-disabled="defaulterflat==''"><span class="glyphicon glyphicon-plus"></span></md-button>
+
+                                                        <div ng-if="countDefaulter>0">
+                                                        <md-input-container flex>
+                                                          <label>Del Defaulter Flatno: </label>
+                                                          <input name="Del defaulter Flatno: " ng-model="deldefaulterflat" required ng-pattern="/^[B-Db-d]{1}-[0-9]{2}$/" md-maxlength="4" >
+                                                        </md-input-container>
+                                                       <md-button class="md-raised md-primary" ng-click="delDefaulter(deldefaulterflat);deldefaulterflat = null;" ng-disabled="deldefaulterflat==''">Del</md-button>
+
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-1 col-md-1">                  
+                                            </div>
+                                        </div>
+                                </div>
+                                
+                                -->
                                 <md-input-container flex>
                                     <label>Add defaulter Flatno: </label>
                                   <input name="Add defaulter Flatno: " ng-model="defaulterflat" 
                  required ng-pattern="/^[B-Db-d]{1}-[0-9]{2}$/" md-maxlength="4" >
                                 </md-input-container>
                             <md-button class="md-raised md-primary" ng-click="addDefaulter(defaulterflat);defaulterflat = null;" ng-disabled="defaulterflat==''">Add</md-button>
+                                <span ng-if="defaulter.length>0">
                                 <h4>Defaulters:<hr>
+                                    <div ng-repeat="d in defaulter">
+                                        {{d}}
+                                <div class="pull-right btn-group btn-group-xs" ng-click="delDefaulter(d)">
+                                        <span class="glyphicon glyphicon-remove"></span>     
+                                    </div>
+                                        
+                                        <br>
+                                </div>
                                 <p id="showdefaulters"></p></h4>
+                                </span>
                             </div>
                             </div>
                             </form>
@@ -258,7 +311,8 @@
                         <div class="modal-footer">
                                  
                             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cleartext()">Cancel</button>
-                            <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button>                            
+                            <button type="button" class="btn btn-primary"  ng-click="passwordvalidation(enteredpassword)">Submit</button> 
+                
                             </div>
 
                             </div>
@@ -298,7 +352,7 @@
       </div>
       <script>
       var app = angular.module('myApp', ['ngMaterial']);
-    app.controller('customersCtrl', function ($scope, $http, DataService) 
+    app.controller('customersCtrl', function ($scope, $http, $compile,DataService) 
     {
             
             $scope.searched = false;
@@ -369,7 +423,7 @@
             }
             $scope.toggle=function(i)
             {
-                console.log(i);
+                //console.log(i);
                 var idx = $scope.selection.indexOf(i);
                 // is currently selected
                 if (idx > -1) {
@@ -380,7 +434,7 @@
                 else {
                   $scope.selection.push(i);
                 }
-                console.log($scope.selection);                            
+                //console.log($scope.selection);                            
             }
             $scope.toggleSelection = function()
             {
@@ -414,6 +468,7 @@
                     }
                 }
                 $scope.visible=true;
+                //console.log("ADI");
             }
             $scope.z="0";
             $scope.sendDate = function(month,selectedyear)
@@ -461,7 +516,7 @@
                                 $scope.maillist.push($scope.flatnos[i].FLAT_NO);
                         }
                     }
-                    console.log($scope.maillist);
+                  //  console.log($scope.maillist);
                     $scope.mails($scope.maillist);
                     $scope.authentication=0;
                     $scope.visibleSender=false;
@@ -477,6 +532,8 @@
             {
                 $scope.authentication = 0;
                 $scope.defaulterflat="";
+                $scope.deldefaulterflat="";
+                
             }
             $scope.passwordvalidation = function(pass)
             {
@@ -515,19 +572,68 @@
                 if(flatno!=null)
                 {
                     flatno=angular.uppercase(flatno);
+                    $scope.flatnum=flatno;
                     for(var i=0;i<$scope.defaulter.length;i++)
                         if(flatno==$scope.defaulter[i])
                             flag=1;
                     if(!flag)
+                    {
                         $scope.defaulter.push(flatno);
-                    console.log($scope.defaulter);
+                     /*   
+                        $scope.str="";
+                        var disstr="";
+                        for (var i=0;i<$scope.defaulter.length;i++)
+                        {
+                            disstr+='<div>'+$scope.defaulter[i]+' <div class="pull-right btn-group btn-group-xs"><p ng-click="delDefaulter('+$scope.defaulter[i]+')"><span class="glyphicon glyphicon-remove"></span></p></div></div><br>';
+                        }
+                            console.log(disstr);                        
+                        var $el = $(disstr).appendTo("#showdefaulters");
+                        $compile($el)($scope);
+                       */     //document.getElementById('showdefaulters').innerHTML=disstr;
+                        
+                    }
+                    //console.log($scope.defaulter);
                 }
-                document.getElementById("showdefaulters").innerHTML=$scope.defaulter;
             }
+            $scope.delDefaulter = function(flatno)
+            {
+                    //console.log(flatno);
+                    if(flatno!=null)
+                    {
+                        var flag=0;
+                        flatno=angular.uppercase(flatno);
+                        var index=$scope.defaulter.indexOf(flatno);
+                        if(index>-1)
+                        {
+                            $scope.defaulter.splice(index,1);
+                            
+                        }
+                       // console.log($scope.defaulter);
+                    }
+            }
+
             $scope.getDetails = function() {
                 DataService.getAllFlatsData().then(
                     $scope.getAllFlatsDataSuccessHandler
                 );
+            }
+            $scope.deleteReciept = function()
+            {
+                var data = {
+                    flatNo:$scope.e.flatNo,
+                    receiptId:$scope.e.receiptId ,
+                    amount:$scope.e.amount ,
+                    date:$scope.date ,
+                    paymentMode:$scope.e.paymentMode,
+                    paymentTyp:$scope.e.paymentTyp,
+                    remarks:$scope.e.remarks ,
+                    received:$scope.e.received ,
+                    year:$scope.e.year ,
+                    months:$scope.selection
+                };
+                $http.post("URL FOR DELETE").success(function(response) {
+                    $scope.getMonthlyDetails($scope.selectedmonth,$scope.selectedyear);
+                    console.log("deleted");});
             }
             $scope.saveGridDetails=function()
             {
@@ -543,7 +649,8 @@
                     year:$scope.e.year ,
                     months:$scope.selection
                     };
-                $http.put('updateReceipt/'+ $scope.e._id,data);
+                $http.put('updateReceipt/'+ $scope.e._id,data).success(function (response) { $scope.getMonthlyDetails($scope.selectedmonth,$scope.selectedyear); });
+                
 
             }
             $scope.editGridDetails= function(flatno,month,year)
@@ -557,7 +664,13 @@
                 $scope.e=response.data;
                 $scope.selection=[];
                 if($scope.e.months!=null)
-                $scope.selection=$scope.e.months;
+                {
+                    for (var i=0;i<$scope.e.months.length;i++)
+                    {
+                        $scope.selection.push($scope.e.months[i]);
+                    }
+                }
+            
             }
             $scope.getPasswordDataSuccessHandler = function(response)
             {
@@ -584,6 +697,7 @@
                 );        
             }
             
+            
             $scope.getAllMonthsDataSuccessHandler = function(response)
             {
                 $scope.grid=response.data.flats;    
@@ -593,7 +707,7 @@
             $scope.getAllFlatsDataSuccessHandler = function(response)
             {
                 $scope.flatnos=response.data.flats;
-                
+            
             }
             
             $scope.getOwnerDetails = function()
